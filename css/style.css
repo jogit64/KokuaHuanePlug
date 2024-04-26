@@ -1,0 +1,59 @@
+.kh-widget {
+  display: flex;
+  flex-direction: column; /* Ceci assure que les éléments dans kh-widget sont empilés verticalement */
+  align-items: center; /* Centre les éléments horizontalement */
+  width: 100%;
+}
+
+.kh-widget img {
+  width: 55px;
+  height: auto;
+}
+
+.kh-controls {
+  display: flex;
+  align-items: center; /* Ceci aligne les boutons et l'input sur une même ligne */
+  justify-content: space-between; /* Répartit les éléments uniformément */
+  width: 100%; /* Assure que le conteneur des contrôles utilise toute la largeur possible */
+}
+
+.kh-input {
+  flex-grow: 1; /* Permet à l'input de prendre tout l'espace horizontal disponible */
+  margin: 0 10px; /* Ajoute un peu d'espace de chaque côté de l'input */
+}
+
+.kh-button,
+.kh-button-stop {
+  cursor: pointer;
+  /* background-color: #4e5d6c; */
+  background-color: #60686f;
+  /* background-color: yellow; */
+  height: 55px;
+  color: white;
+  padding: 15px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.kh-response {
+  margin-top: 30px;
+  padding: 10px;
+  border: 1px solid #4e5d6c;
+  border-radius: 5px;
+
+  width: 100%; /* Utilisez 100% pour la largeur pour une meilleure adaptabilité */
+  max-width: 800px; /* Fixe la largeur maximale à 800px */
+  overflow-x: hidden; /* Empêche le débordement horizontal */
+  overflow-y: auto; /* Permet le défilement vertical si le contenu est trop long */
+
+  background-color: #4e5d6c; /* Couleur de fond légère pour les conteneurs */
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur calculée */
+
+  font-family: Arial, sans-serif;
+  color: white;
+  font-size: 14px;
+}
