@@ -27,6 +27,24 @@
   /* background-color: green; */
 }
 
+.kh-response p {
+  margin-bottom: 10px; /* Espacement entre les messages */
+}
+
+.kh-response .message-block {
+  margin-bottom: 20px; /* Espacement plus important entre les blocs USER et STAN */
+}
+
+.kh-response .message-content {
+  margin-top: 2px; /* Espacement réduit entre le préfixe et le texte */
+  margin-left: 20px; /* Indentation du texte pour le distinguer du préfixe */
+}
+
+.kh-response .prefix {
+  font-weight: bold; /* Met en gras les préfixes */
+  display: block; /* Affiche le préfixe sur une ligne propre */
+}
+
 /*
 /* 
 /* 
