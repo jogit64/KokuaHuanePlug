@@ -94,32 +94,38 @@ jQuery(document).ready(function ($) {
         );
       },
       success: function (response) {
-        $(".kh-response").html(response.response);
+        let currentHtml = $(".kh-response").html();
+        $(".kh-response").html(
+          currentHtml +
+            "<div class='message-block'><span class='prefix'>USER:</span><div class='message-content'>" +
+            inputText +
+            "</div></div><div class='message-block'><span class='prefix'>STAN:</span><div class='message-content'>" +
+            response.response +
+            "</div></div>"
+        );
         $(".kh-input").val("");
         if (isMicrophoneUsed) {
-          toggleRecognition(false);
           let utterance = new SpeechSynthesisUtterance(response.response);
           utterance.onend = function () {
-            $(".kh-button-micro").prop(
-              "disabled",
-              $(".kh-input").val().length !== 0
-            ); // Réactiver le bouton micro si l'input est vide
-            $(".kh-button-stop").prop("disabled", true); // Désactiver le bouton stop car la synthèse est terminée
-            updateButtonStates(); // Mise à jour finale des états
+            toggleRecognition(true); // Réactivation de la reconnaissance vocale après la fin de la synthèse
+            $(".kh-button-micro").prop("disabled", false); // Réactivation du bouton micro
+            $(".kh-button-stop").prop("disabled", true); // Désactivation du bouton stop
+            updateButtonStates();
           };
           synth.speak(utterance);
-          $(".kh-button-stop").prop("disabled", false); // Activer temporairement le bouton stop pendant la synthèse
-          $(".kh-button-micro").prop("disabled", true); // Désactiver le bouton micro pendant la synthèse
+          $(".kh-button-stop").prop("disabled", false);
+          $(".kh-button-micro").prop("disabled", true);
           isMicrophoneUsed = false;
         } else {
-          updateButtonStates(); // Mettre à jour les états si la synthèse vocale n'est pas utilisée
+          updateButtonStates();
         }
       },
       error: function () {
         $(".kh-response").html(
-          "Erreur lors de la communication avec le serveur."
+          $(".kh-response").html() +
+            "<div class='message-block'>Erreur lors de la communication avec le serveur.</div>"
         );
-        updateButtonStates(); // Réinitialise les états des boutons en cas d'erreur
+        updateButtonStates();
       },
     });
   });
