@@ -58,6 +58,7 @@ jQuery(document).ready(function ($) {
     $(".kh-button-micro").prop("disabled", textLength !== 0);
     // $(".kh-button-micro").prop("disabled", textLength !== 0 || synth.speaking);
     $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
+
     $(".kh-input").prop("disabled", false);
   }
 
@@ -95,13 +96,23 @@ jQuery(document).ready(function ($) {
       success: function (response) {
         $(".kh-response").html(response.response);
         $(".kh-input").val("");
-        updateButtonStates(); // Réinitialise les états des boutons après réception de la réponse
         if (isMicrophoneUsed) {
           toggleRecognition(false);
-          synth.speak(new SpeechSynthesisUtterance(response.response));
-          $(".kh-button-stop").prop("disabled", false);
-          $(".kh-button-micro").prop("disabled", true);
+          let utterance = new SpeechSynthesisUtterance(response.response);
+          utterance.onend = function () {
+            $(".kh-button-micro").prop(
+              "disabled",
+              $(".kh-input").val().length !== 0
+            ); // Réactiver le bouton micro si l'input est vide
+            $(".kh-button-stop").prop("disabled", true); // Désactiver le bouton stop car la synthèse est terminée
+            updateButtonStates(); // Mise à jour finale des états
+          };
+          synth.speak(utterance);
+          $(".kh-button-stop").prop("disabled", false); // Activer temporairement le bouton stop pendant la synthèse
+          $(".kh-button-micro").prop("disabled", true); // Désactiver le bouton micro pendant la synthèse
           isMicrophoneUsed = false;
+        } else {
+          updateButtonStates(); // Mettre à jour les états si la synthèse vocale n'est pas utilisée
         }
       },
       error: function () {
