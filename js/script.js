@@ -1,21 +1,12 @@
+// Encapsulation dans jQuery(document).ready pour garantir que le script s'exécute après le chargement complet du DOM
 jQuery(document).ready(function ($) {
+  // Déclarations des variables liées à la reconnaissance vocale et à la synthèse vocale
   let recognition;
   let synth = window.speechSynthesis;
   let isMicrophoneUsed = false;
   let isRecognizing = false;
 
-  function toggleRecognition(shouldStart) {
-    if (recognition) {
-      if (shouldStart && !isRecognizing) {
-        recognition.start();
-        isRecognizing = true;
-      } else {
-        recognition.stop();
-        isRecognizing = false;
-      }
-    }
-  }
-
+  // Fonction pour initialiser la reconnaissance vocale
   function initializeRecognition() {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -47,20 +38,47 @@ jQuery(document).ready(function ($) {
     }
   }
 
+  // Fonction pour activer ou désactiver la reconnaissance vocale
+  function toggleRecognition(shouldStart) {
+    if (recognition) {
+      if (shouldStart && !isRecognizing) {
+        recognition.start();
+        isRecognizing = true;
+      } else {
+        recognition.stop();
+        isRecognizing = false;
+      }
+    }
+  }
+
+  // Fonction pour ajuster l'état des boutons
+  function updateButtonStates() {
+    let textLength = $(".kh-input").val().length;
+    $(".kh-button-send").prop("disabled", textLength === 0);
+    $(".kh-button-micro").prop("disabled", textLength !== 0);
+    // $(".kh-button-micro").prop("disabled", textLength !== 0 || synth.speaking);
+    $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
+    $(".kh-input").prop("disabled", false);
+  }
+
+  // Gestion des clics sur le bouton micro pour démarrer la reconnaissance
   $(".kh-button-micro").on("click", function () {
     toggleRecognition(true);
+    $(this).addClass("active");
   });
 
+  // Gestion des clics sur le bouton stop pour arrêter la reconnaissance et la synthèse vocale
   $(".kh-button-stop").on("click", function () {
     toggleRecognition(false);
     isMicrophoneUsed = false;
-
     if (synth.speaking) {
       synth.cancel();
     }
-    $(this).prop("disabled", true);
+    $(this).prop("disabled", true).removeClass("active");
+    updateButtonStates();
   });
 
+  // Envoi d'une requête POST avec le texte reconnu ou saisi
   $(".kh-button-send").click(function () {
     var inputText = $(".kh-input").val();
     $.ajax({
@@ -68,21 +86,21 @@ jQuery(document).ready(function ($) {
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify({ question: inputText }),
+      beforeSend: function () {
+        $(".kh-button-send, .kh-button-stop, .kh-button-micro, .kh-input").prop(
+          "disabled",
+          true
+        );
+      },
       success: function (response) {
         $(".kh-response").html(response.response);
         $(".kh-input").val("");
+        updateButtonStates(); // Réinitialise les états des boutons après réception de la réponse
         if (isMicrophoneUsed) {
           toggleRecognition(false);
-
-          let utterance = new SpeechSynthesisUtterance(response.response);
-          utterance.onend = function () {
-            if (isMicrophoneUsed) {
-              toggleRecognition(true);
-            }
-            $(".kh-button-stop").prop("disabled", true);
-          };
-          synth.speak(utterance);
+          synth.speak(new SpeechSynthesisUtterance(response.response));
           $(".kh-button-stop").prop("disabled", false);
+          $(".kh-button-micro").prop("disabled", true);
           isMicrophoneUsed = false;
         }
       },
@@ -90,16 +108,25 @@ jQuery(document).ready(function ($) {
         $(".kh-response").html(
           "Erreur lors de la communication avec le serveur."
         );
+        updateButtonStates(); // Réinitialise les états des boutons en cas d'erreur
       },
     });
   });
 
+  // Désactivation du bouton d'envoi et du bouton micro si le champ de saisie est vide, sinon activation
   $(".kh-input").on("input", function () {
-    let textLength = $(this).val().length;
-    $(".kh-button-send").prop("disabled", textLength === 0);
+    resizeTextarea(); // Ajuste la hauteur de la zone de texte à chaque saisie
+    updateButtonStates(); // Mise à jour des états des boutons
   });
 
+  // Fonction pour ajuster la hauteur de la zone de texte dynamiquement
+  function resizeTextarea() {
+    var textarea = document.querySelector(".kh-input");
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
+
+  // Initialisation de la reconnaissance vocale
   initializeRecognition();
-  $(".kh-button-send").prop("disabled", $(".kh-input").val().length === 0);
-  $(".kh-button-stop").prop("disabled", true);
+  updateButtonStates(); // Mise à jour initiale des états des boutons
 });

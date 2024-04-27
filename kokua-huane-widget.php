@@ -40,15 +40,20 @@ class Kokua_Huane_Widget extends WP_Widget
         echo $args['before_widget'];
 ?>
 <div class="kh-widget">
+    <div class="kh-response"></div>
     <div class="kh-controls">
         <button class="kh-button-micro"><img src="<?php echo plugins_url('assets/micro.png', __FILE__); ?>"
                 alt="Micro"></button>
-        <button class="kh-button-stop" disabled="disabled">Arrêter</button>
+
+        <button class="kh-button-stop" disabled="disabled"><img
+                src="<?php echo plugins_url('assets/stop.png', __FILE__); ?>" alt="Stop"></button>
+
+        <textarea class="kh-input"></textarea>
+
         <button class="kh-button-send" disabled="disabled"><img
                 src="<?php echo plugins_url('assets/send.png', __FILE__); ?>" alt="Send"></button>
-        <textarea class="kh-input"></textarea>
     </div>
-    <div class="kh-response"></div>
+
 </div>
 
 <?php

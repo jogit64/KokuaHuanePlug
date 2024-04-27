@@ -3,69 +3,9 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
 
-.kh-widget img {
-  width: 55px;
-  height: auto;
-}
-
-.kh-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.kh-input {
-  flex-grow: 1;
-  margin: 0 10px;
-  min-height: 110px;
-  border-radius: 5px;
-  background-color: #4e5d6c;
-  border: 1px solid #ccc;
-  box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur calculée */
-  font-family: Arial, sans-serif;
-  color: white;
-  font-size: 14px;
-}
-
-/*
-/* 
-/* 
-/* * LES BOUTONS */
-
-.kh-button-micro,
-.kh-button-send,
-.kh-button-stop {
-  cursor: pointer;
-  background-color: #60686f;
-  height: 55px;
-  color: white;
-  padding: 15px 20px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s, opacity 0.3s;
-  font-size: 12px;
-  margin-right: 8px;
-}
-
-.kh-button-micro:hover,
-.kh-button-send:hover,
-.kh-button-stop:hover {
-  background-color: aqua;
-}
-
-.kh-button-micro:active,
-.kh-button-send:active,
-.kh-button-stop:active {
-  background-color: red;
-}
-
-.kh-button-send:disabled,
-.kh-button-stop:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
+  /* background-color: #2b3e50; */
+  /* background-color: #1772c8; */
 }
 
 /*
@@ -76,16 +16,98 @@
   width: 100%;
   max-width: 800px;
   margin-top: 30px;
+  margin-bottom: 30px;
   padding: 10px;
+  padding-left: 20px;
+  min-height: 300px;
 
   font-family: Arial, sans-serif;
   color: white;
-  font-size: 14px;
+  font-size: 16px;
+  /* background-color: green; */
+}
 
-  background-color: #4e5d6c;
+/*
+/* 
+/* 
+/* * LA ZONE DES CONTROLES et INPUT */
+.kh-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
+  border-radius: 20px;
+  /* padding-bottom: 2rem; */
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  /* background-color: yellow; */
+}
+
+/*
+/* 
+/* 
+/* * LA QUESTION */
+.kh-input {
+  width: 100%; /* Assurez-vous que le textarea s'étend sur toute la largeur disponible */
+  /* min-height: 50px;  */
+  max-height: 150px; /* Hauteur maximum avant de montrer la barre de défilement */
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  color: white;
+  font-size: 16px;
+  background-color: #2b3e50;
+  border: none; /* Supprime les bordures pour intégrer avec le fond */
+  resize: none; /* Empêche le redimensionnement manuel */
+  overflow-y: auto; /* Permet la barre de défilement verticale automatiquement si nécessaire */
+}
+
+/*
+/* 
+/* 
+/* * LES BOUTONS */
+.kh-button-micro,
+.kh-button-send,
+.kh-button-stop {
+  cursor: pointer;
+  background-color: #60686f;
+
+  transition: background-color 0.3s, opacity 0.3s;
+  border: 1px solid #ccc;
+  margin-right: 0.5em;
+  border-radius: 40%;
+  /* margin-top: 1em; */
+  padding: 0.3em;
+  width: 3.2rem;
+  height: 3rem;
+}
+
+.kh-button-micro img,
+.kh-button-send img,
+.kh-button-stop img {
+  width: 100%;
+  height: 100%;
+}
+
+.kh-button-micro:hover,
+.kh-button-send:hover:not(:disabled),
+.kh-button-stop:hover:not(:disabled) {
+  background-color: #60686f;
+  opacity: 0.5;
+}
+
+.kh-button-micro:active,
+.kh-button-send:active:not(:disabled),
+.kh-button-stop:active:not(:disabled) {
+  background-color: red;
+}
+
+/* Style pour les boutons désactivés */
+.kh-button-micro:disabled,
+.kh-button-send:disabled,
+.kh-button-stop:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  background-color: #60686f; /* Maintient la couleur de fond même pour les boutons désactivés */
 }
