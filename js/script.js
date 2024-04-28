@@ -56,8 +56,8 @@ jQuery(document).ready(function ($) {
     let textLength = $(".kh-input").val().length;
     $(".kh-button-send").prop("disabled", textLength === 0);
     $(".kh-button-micro").prop("disabled", textLength !== 0);
-    // $(".kh-button-micro").prop("disabled", textLength !== 0 || synth.speaking);
-    $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
+    $(".kh-button-micro").prop("disabled", textLength !== 0 || synth.speaking);
+    // $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
 
     $(".kh-input").prop("disabled", false);
   }
@@ -65,6 +65,7 @@ jQuery(document).ready(function ($) {
   // Gestion des clics sur le bouton micro pour démarrer la reconnaissance
   $(".kh-button-micro").on("click", function () {
     toggleRecognition(true);
+    isMicrophoneUsed = true;
     $(this).addClass("active");
   });
 
@@ -110,6 +111,7 @@ jQuery(document).ready(function ($) {
             toggleRecognition(true); // Réactivation de la reconnaissance vocale après la fin de la synthèse
             $(".kh-button-micro").prop("disabled", false); // Réactivation du bouton micro
             $(".kh-button-stop").prop("disabled", true); // Désactivation du bouton stop
+            // isMicrophoneUsed = false;
             updateButtonStates();
           };
           synth.speak(utterance);
