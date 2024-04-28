@@ -3,9 +3,15 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  /* height: 100%; */
+  position: relative;
 
-  /* background-color: #2b3e50; */
-  /* background-color: #1772c8; */
+  /* height: 100vh;  */
+
+  max-width: 800px; /* Assurez-vous que le widget ne dépasse pas une largeur maximale */
+  /* height: 100vh;  */
+
+  overflow: hidden;
 }
 
 /*
@@ -14,17 +20,14 @@
 /* * LA REPONSE */
 .kh-response {
   width: 100%;
+
   max-width: 800px;
   margin-top: 30px;
-  margin-bottom: 30px;
-  padding: 10px;
-  padding-left: 20px;
-  min-height: 300px;
 
   font-family: Arial, sans-serif;
   color: white;
   font-size: 16px;
-  /* background-color: green; */
+  padding-bottom: 150px;
 }
 
 .kh-response p {
@@ -56,11 +59,18 @@
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 20px;
-  /* padding-bottom: 2rem; */
   padding: 20px;
+  margin-bottom: 20px;
+  z-index: 1000;
+}
+
+.kh-controls-container {
+  box-sizing: border-box;
+  position: fixed; /* Position fixe en bas */
+  bottom: 0; /* Aligné au bas de l'écran ou du parent relatif */
+  background-color: #2b3e50;
   width: 100%;
   max-width: 800px;
-  /* background-color: yellow; */
 }
 
 /*
@@ -68,8 +78,7 @@
 /* 
 /* * LA QUESTION */
 .kh-input {
-  width: 100%; /* Assurez-vous que le textarea s'étend sur toute la largeur disponible */
-  /* min-height: 50px;  */
+  width: 100%;
   max-height: 150px; /* Hauteur maximum avant de montrer la barre de défilement */
   padding: 10px;
   font-family: Arial, sans-serif;
