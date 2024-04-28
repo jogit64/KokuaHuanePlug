@@ -41,7 +41,15 @@ class Kokua_Huane_Widget extends WP_Widget
 ?>
 <div class="kh-widget">
     <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
-    <div class="kh-response"></div>
+    <div class="kh-response">
+        <div class="loading-indicator">
+            <div class="loader">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
     <div class="kh-controls-container">
         <div class="kh-controls">
             <button class="kh-button-micro"><img src="<?php echo plugins_url('assets/micro.png', __FILE__); ?>"
@@ -51,8 +59,10 @@ class Kokua_Huane_Widget extends WP_Widget
             <textarea class="kh-input"></textarea>
             <button class="kh-button-send" disabled="disabled"><img
                     src="<?php echo plugins_url('assets/send.png', __FILE__); ?>" alt="Send"></button>
+            <div class="listening-indicator"></div><!-- Indicateur d'écoute -->
         </div>
     </div>
+
 </div>
 
 

@@ -143,3 +143,65 @@
   cursor: not-allowed;
   background-color: #60686f; /* Maintient la couleur de fond même pour les boutons désactivés */
 }
+
+.listening-indicator {
+  width: 10px;
+  height: 10px;
+  background-color: red; /* Couleur de fond pour l'indicateur */
+  border-radius: 50%; /* Pour un aspect circulaire */
+  margin-left: 10px; /* Ajustez selon vos besoins */
+  visibility: hidden; /* Initialement caché */
+}
+
+.listening-indicator.active {
+  visibility: visible; /* Affiche l'indicateur lorsque la reconnaissance vocale est active */
+}
+
+.loading-indicator {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+}
+
+.loading-indicator.active {
+  visibility: visible;
+}
+
+.loader {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100px;
+  height: 60px;
+}
+
+.loader .bar {
+  width: 10px;
+  height: 20px;
+  background-color: #4e5d6c;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.loader .bar:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loader .bar:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    height: 20px;
+  }
+  50% {
+    height: 60px;
+  }
+}

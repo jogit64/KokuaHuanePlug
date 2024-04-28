@@ -44,9 +44,11 @@ jQuery(document).ready(function ($) {
       if (shouldStart && !isRecognizing) {
         recognition.start();
         isRecognizing = true;
+        $(".listening-indicator").addClass("active"); // Ajoute la classe active pour afficher l'indicateur
       } else {
         recognition.stop();
         isRecognizing = false;
+        $(".listening-indicator").removeClass("active"); // Retire la classe active pour masquer l'indicateur
       }
     }
   }
@@ -83,6 +85,7 @@ jQuery(document).ready(function ($) {
   // Envoi d'une requête POST avec le texte reconnu ou saisi
   $(".kh-button-send").click(function () {
     var inputText = $(".kh-input").val();
+    $(".loading-indicator").addClass("active");
     $.ajax({
       url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
       method: "POST",
@@ -95,6 +98,7 @@ jQuery(document).ready(function ($) {
         );
       },
       success: function (response) {
+        $(".loading-indicator").removeClass("active");
         let currentHtml = $(".kh-response").html();
         $(".kh-response").html(
           currentHtml +
@@ -123,6 +127,7 @@ jQuery(document).ready(function ($) {
         }
       },
       error: function () {
+        $(".loading-indicator").removeClass("active");
         $(".kh-response").html(
           $(".kh-response").html() +
             "<div class='message-block'>Erreur lors de la communication avec le serveur.</div>"
