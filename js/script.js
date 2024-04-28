@@ -109,6 +109,7 @@ jQuery(document).ready(function ($) {
             "</div></div>"
         );
         $(".kh-input").val("");
+        window.scrollTo(0, document.body.scrollHeight);
         if (isMicrophoneUsed) {
           let utterance = new SpeechSynthesisUtterance(response.response);
           utterance.onend = function () {
