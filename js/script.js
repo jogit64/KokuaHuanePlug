@@ -6,6 +6,122 @@ jQuery(document).ready(function ($) {
   let isMicrophoneUsed = false;
   let isRecognizing = false;
 
+  // ! FLUX VISUEL FORM CONNEXION
+
+  if (localStorage.getItem("jwt")) {
+    $(".login-form").hide();
+    $(".user-info .username-display").text(localStorage.getItem("username"));
+    $(".user-info").show();
+  } else {
+    $(".login-form").show();
+    $(".register-form").hide();
+    $(".user-info").hide();
+  }
+
+  // Montrer le formulaire d'inscription
+  $(".show-register-form").click(function () {
+    $(".login-form").hide();
+    $(".register-form").show();
+    $(this).hide(); // Cache le bouton d'inscription après le clic
+  });
+
+  // Retour au formulaire de connexion depuis l'inscription
+  $(".register-button").click(function () {
+    var username = $(".register-username").val();
+    var password = $(".register-password").val();
+    var passwordConfirm = $(".register-password-confirm").val();
+    if (password !== passwordConfirm) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    register(username, password); // Modifié pour ne pas répéter la logique ici
+  });
+
+  // Ajouter un bouton pour revenir au formulaire de connexion dans le HTML de l'inscription
+  // <button class="back-to-login">Retour à la connexion</button>
+  $(".back-to-login").click(function () {
+    $(".register-form").hide();
+    $(".login-form").show();
+    $(".show-register-form").show(); // Remontrer le bouton d'inscription
+  });
+
+  // ! FONCTION REGISTER ET LOGIN
+
+  // * Fonction d'inscription
+  function register(username, password, passwordConfirm) {
+    if (password !== passwordConfirm) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    $.ajax({
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/register",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ username: username, password: password }),
+      success: function (response) {
+        alert("Inscription réussie, veuillez vous connecter.");
+        $(".register-form").hide();
+        $(".login-form").show();
+      },
+      error: function () {
+        alert("Erreur d'inscription");
+      },
+    });
+  }
+
+  // * Fonction de connexion
+  function login(username, password) {
+    $.ajax({
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/login",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ username: username, password: password }),
+      success: function (response) {
+        localStorage.setItem("jwt", response.access_token);
+        localStorage.setItem("username", username); // Stocker le nom d'utilisateur
+        $(".login-form").hide();
+        $(".user-info .username-display").text(username); // Afficher le nom d'utilisateur
+        $(".user-info").show();
+        $(".show-register-form").hide();
+        updateButtonStates();
+      },
+      error: function () {
+        alert("Erreur de connexion");
+      },
+    });
+  }
+
+  // * Fonction de déconnexion
+  function logout() {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("username");
+    $(".login-form").show();
+    $(".user-info").hide(); // Cacher les infos de l'utilisateur
+    $(".register-form").hide(); // Assurez-vous que le formulaire d'inscription est caché
+    $(".show-register-form").show(); // Réafficher le bouton d'affichage du formulaire d'inscription
+    $(".kh-response").html(""); // Vider l'espace de réponse
+    updateButtonStates();
+  }
+
+  // * Attache les gestionnaires d'événements aux boutons
+
+  $(".register-button").click(function () {
+    var username = $(".register-username").val();
+    var password = $(".register-password").val();
+    var passwordConfirm = $(".register-password-confirm").val();
+    register(username, password, passwordConfirm);
+  });
+
+  $(".login-button").click(function () {
+    login($(".username").val(), $(".password").val());
+  });
+
+  $(".logout-button").click(function () {
+    logout();
+  });
+
+  // ! FIN FONCTION REGISTER ET LOGIN
+
   // Fonction pour initialiser la reconnaissance vocale
   function initializeRecognition() {
     const SpeechRecognition =
@@ -55,6 +171,8 @@ jQuery(document).ready(function ($) {
 
   // Fonction pour ajuster l'état des boutons
   function updateButtonStates() {
+    let isLoggedIn = localStorage.getItem("jwt") !== null;
+    $(".logout-button").toggleClass("show", isLoggedIn);
     let textLength = $(".kh-input").val().length;
     $(".kh-button-send").prop("disabled", textLength === 0);
     $(".kh-button-micro").prop("disabled", textLength !== 0);
@@ -90,6 +208,9 @@ jQuery(document).ready(function ($) {
       url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
       method: "POST",
       contentType: "application/json",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"), // Utilisation du JWT
+      },
       data: JSON.stringify({ question: inputText }),
       beforeSend: function () {
         $(".kh-button-send, .kh-button-stop, .kh-button-micro, .kh-input").prop(

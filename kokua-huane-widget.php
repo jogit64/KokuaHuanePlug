@@ -40,6 +40,33 @@ class Kokua_Huane_Widget extends WP_Widget
         echo $args['before_widget'];
 ?>
 <div class="kh-widget">
+    <!-- Barre de statut utilisateur -->
+    <div class="user-info" style="display:none;">
+        <img src="<?php echo plugins_url('assets/user.png', __FILE__); ?>" alt="User" class="user-icon">
+        <span class="username-display"></span>
+        <button class="logout-button">
+            <img src="<?php echo plugins_url('assets/exit.png', __FILE__); ?>" alt="Logout">
+        </button>
+    </div>
+
+    <div class="register-form" style="display:none;">
+        <input type="text" class="register-username" placeholder="Nom d'utilisateur" />
+        <input type="password" class="register-password" placeholder="Mot de passe" />
+        <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" />
+        <button class="register-button">Inscription</button>
+        <button class="back-to-login">Retour à la connexion</button> <!-- Bouton ajouté ici -->
+    </div>
+    <button class="show-register-form">Afficher le formulaire d'inscription</button>
+
+
+    <div class="login-form">
+        <input type="text" class="username" placeholder="Nom d'utilisateur" />
+        <input type="password" class="password" placeholder="Mot de passe" />
+        <button class="login-button">Connexion</button>
+    </div>
+    <button class="logout-button" style="display:none;">Déconnexion</button>
+
+
     <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
     <div class="kh-response">
         <div class="loading-indicator">

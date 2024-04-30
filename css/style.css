@@ -12,6 +12,7 @@
   /* height: 100vh;  */
 
   overflow: hidden;
+  color: white;
 }
 
 /*
@@ -204,4 +205,189 @@
   50% {
     height: 60px;
   }
+}
+
+/* ! */
+/* ! */
+/* ! DESIGN DU FORM INSCRIPTION CONNEXION */
+
+/* Styles généraux pour les formulaires */
+.register-form,
+.login-form {
+  background-color: #2b3e50; /* Couleur de fond adaptée à votre palette */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Styles pour les inputs */
+.register-form input,
+.login-form input {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+.register-form input:focus,
+.login-form input:focus {
+  border-color: #4a90e2; /* Une couleur de mise en évidence */
+}
+
+/* Styles pour les boutons */
+.register-button,
+.login-button {
+  cursor: pointer;
+  padding: 10px 20px;
+  width: 100%;
+  background-color: #60686f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.register-button:focus,
+.login-button:focus {
+  background-color: #4a90e2;
+}
+.register-button:hover,
+.login-button:hover {
+  background-color: #4a90e2;
+}
+/*
+.register-button:active,
+.login-button:active {
+  background-color: #3672b8; 
+} */
+
+/* .show-register-form, */
+.show-login-form {
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
+  display: block;
+  transition: color 0.3s;
+  border: 1px solid #ccc;
+}
+
+/* .show-register-form:hover, */
+.show-login-form:hover {
+  color: #ffffff;
+  border: none;
+}
+
+.show-register-form {
+  cursor: pointer;
+  color: #4a90e2;
+  background-color: transparent; /* Fond transparent pour moins de prominence */
+  border: none;
+  text-decoration: underline;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
+  display: block;
+  transition: color 0.3s;
+}
+
+.show-register-form:hover {
+  color: #fff;
+  background-color: #2b3e50;
+}
+
+/* Ajout de petites animations pour les transitions d'état */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+}
+
+/* Style pour le bouton de déconnexion */
+/* .logout-button {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #60686f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  display: none;
+  margin-top: 10px; 
+} */
+
+.logout-button.show {
+  display: block; /* affiché lorsque l'utilisateur est connecté */
+}
+/* 
+.logout-button:hover {
+  background-color: #4a90e2; 
+} */
+
+.logout-button:active {
+  background-color: #3672b8; /* changement de couleur lors du clic */
+}
+
+.back-to-login {
+  cursor: pointer;
+  background-color: transparent;
+  color: #4a90e2;
+  border: none;
+  text-decoration: underline;
+  padding: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.back-to-login:hover {
+  color: #fff;
+  background-color: #2b3e50;
+}
+
+/* Barre de statut en haut à droite */
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alignement à droite */
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%; /* Couvre toute la largeur pour un alignement à droite correct */
+}
+
+.user-icon,
+.logout-button img {
+  width: 24px; /* Taille des icônes */
+  height: 24px;
+  margin-right: 10px; /* Espace entre les icônes et le texte */
+}
+
+.username-display {
+  margin-right: 10px; /* Espace entre le nom d'utilisateur et le bouton de déconnexion */
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  opacity: 0.8; /* Effet au survol pour le bouton de déconnexion */
+  background-color: #2b3e50;
 }
