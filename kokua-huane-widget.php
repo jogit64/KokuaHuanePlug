@@ -9,11 +9,17 @@ Author: Votre Nom
 // Inclure les scripts et styles
 function kh_enqueue_scripts()
 {
-    wp_enqueue_style('kh-style', plugins_url('css/style.css', __FILE__));
-    wp_enqueue_script('kh-script', plugins_url('js/script.js', __FILE__), array('jquery'), null, true);
+    global $post;
+    // Vérifier si le shortcode du widget Kokua Huane est présent dans le contenu de la page
+    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'kokua_huane_widget')) {
+        wp_enqueue_style('kh-style', plugins_url('css/style.css', __FILE__)); // Charger le CSS
+        wp_enqueue_script('kh-script', plugins_url('js/script.js', __FILE__), array('jquery'), null, true); // Charger le JS
+    }
 }
 
 add_action('wp_enqueue_scripts', 'kh_enqueue_scripts');
+
+
 
 // Enregistrement du widget
 function register_kokua_huane_widget()
@@ -69,12 +75,13 @@ class Kokua_Huane_Widget extends WP_Widget
 
     <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
     <div class="kh-response">
-        <div class="loading-indicator">
-            <div class="loader">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
+
+    </div>
+    <div class="loading-indicator">
+        <div class="loader">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
         </div>
     </div>
     <div class="kh-controls-container">
@@ -86,6 +93,8 @@ class Kokua_Huane_Widget extends WP_Widget
             <textarea class="kh-input"></textarea>
             <button class="kh-button-send" disabled="disabled"><img
                     src="<?php echo plugins_url('assets/send.png', __FILE__); ?>" alt="Send"></button>
+
+
             <div class="listening-indicator"></div><!-- Indicateur d'écoute -->
         </div>
     </div>

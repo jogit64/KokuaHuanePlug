@@ -20,6 +20,7 @@ jQuery(document).ready(function ($) {
       $(".user-info").show();
       $(".logout-button").show();
       $(".show-register-form").hide();
+      $(".kh-controls-container").show();
     } else {
       $(".login-form").show();
       $(".register-form").hide();
@@ -27,6 +28,7 @@ jQuery(document).ready(function ($) {
       $(".logout-button").hide();
       $(".show-register-form").show();
       $(".kh-response").html("");
+      $(".kh-controls-container").hide();
     }
   }
 
@@ -98,15 +100,11 @@ jQuery(document).ready(function ($) {
       success: function (response) {
         localStorage.setItem("jwt", response.access_token);
         localStorage.setItem("displayName", response.displayName);
-        console.log(
-          "displayName in localStorage:",
-          localStorage.getItem("displayName")
-        );
-
         updateUI();
       },
       error: function (xhr) {
-        alert("Erreur de connexion: " + xhr.responseText);
+        var errorMsg = JSON.parse(xhr.responseText).msg; // Parse le message d'erreur du serveur
+        alert("Erreur de connexion: " + errorMsg); // Affiche un message d'erreur plus clair
       },
     });
   }
@@ -182,6 +180,7 @@ jQuery(document).ready(function ($) {
     // $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
 
     $(".kh-input").prop("disabled", false);
+    $(".kh-input").focus();
   }
 
   // Gestion des clics sur le bouton micro pour démarrer la reconnaissance
@@ -233,6 +232,7 @@ jQuery(document).ready(function ($) {
         );
         $(".kh-input").val("");
         window.scrollTo(0, document.body.scrollHeight);
+
         if (isMicrophoneUsed) {
           let utterance = new SpeechSynthesisUtterance(response.response);
           utterance.onend = function () {
