@@ -51,7 +51,7 @@ class Kokua_Huane_Widget extends WP_Widget
 
     <div class="register-form" style="display:none;">
         <input type="email" class="register-email" placeholder="Email" required />
-        <input type="text" class="register-display-name" placeholder="Display Name" />
+        <input type="text" class="register-display-name" placeholder="Pseudo" />
         <input type="password" class="register-password" placeholder="Mot de passe" required />
         <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" required />
         <button class="register-button">Inscription</button>
@@ -61,10 +61,8 @@ class Kokua_Huane_Widget extends WP_Widget
 
 
     <div class="login-form">
-        <label for=" email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Mot de passe:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
         <button class="login-button">Se connecter</button>
     </div>
 

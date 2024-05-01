@@ -26,6 +26,7 @@ jQuery(document).ready(function ($) {
       $(".user-info").hide();
       $(".logout-button").hide();
       $(".show-register-form").show();
+      $(".kh-response").html("");
     }
   }
 
