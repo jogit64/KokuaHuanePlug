@@ -60,13 +60,13 @@ class Kokua_Huane_Widget extends WP_Widget
     <button class="show-register-form">Afficher le formulaire d'inscription</button>
 
 
-    <form id="loginForm">
+    <div class="login-form">
         <label for=" email">Email:</label>
         <input type="email" id="email" name="email" required>
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" name="password" required>
         <button type="submit">Se connecter</button>
-    </form>
+    </div>
 
     <button class="logout-button" style="display:none;">Déconnexion</button>
 
