@@ -50,20 +50,24 @@ class Kokua_Huane_Widget extends WP_Widget
     </div>
 
     <div class="register-form" style="display:none;">
-        <input type="text" class="register-username" placeholder="Nom d'utilisateur" />
-        <input type="password" class="register-password" placeholder="Mot de passe" />
-        <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" />
+        <input type="email" class="register-email" placeholder="Email" required />
+        <input type="text" class="register-display-name" placeholder="Display Name" />
+        <input type="password" class="register-password" placeholder="Mot de passe" required />
+        <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" required />
         <button class="register-button">Inscription</button>
-        <button class="back-to-login">Retour à la connexion</button> <!-- Bouton ajouté ici -->
+        <button class="back-to-login">Retour à la connexion</button>
     </div>
     <button class="show-register-form">Afficher le formulaire d'inscription</button>
 
 
-    <div class="login-form">
-        <input type="text" class="username" placeholder="Nom d'utilisateur" />
-        <input type="password" class="password" placeholder="Mot de passe" />
-        <button class="login-button">Connexion</button>
-    </div>
+    <form id="loginForm">
+        <label for=" email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Se connecter</button>
+    </form>
+
     <button class="logout-button" style="display:none;">Déconnexion</button>
 
 
