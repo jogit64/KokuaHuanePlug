@@ -9,19 +9,31 @@ jQuery(document).ready(function ($) {
   // ! FLUX VISUEL FORM CONNEXION
 
   // Gestion de l'affichage des formulaires en fonction du JWT
-  if (localStorage.getItem("jwt")) {
-    $(".login-form").hide();
-    $(".user-info .username-display").text(localStorage.getItem("displayName")); // Mise à jour pour utiliser display name
-    $(".user-info").show();
-  } else {
-    $("#loginForm").show(); // Correction pour montrer le formulaire de connexion
-    $(".register-form").hide();
-    $(".user-info").hide();
+  function updateUI() {
+    if (localStorage.getItem("jwt")) {
+      $(".login-form").hide();
+      $(".register-form").hide();
+      $(".user-info .username-display").text(
+        localStorage.getItem("displayName")
+      );
+
+      $(".user-info").show();
+      $(".logout-button").show();
+      $(".show-register-form").hide();
+    } else {
+      $(".login-form").show();
+      $(".register-form").hide();
+      $(".user-info").hide();
+      $(".logout-button").hide();
+      $(".show-register-form").show();
+    }
   }
+
+  updateUI();
 
   // Montrer le formulaire d'inscription
   $(".show-register-form").click(function () {
-    $("#loginForm").hide(); // Correction pour cacher le formulaire de connexion correctement
+    $(".login-form").hide();
     $(".register-form").show();
     $(this).hide();
   });
@@ -29,32 +41,19 @@ jQuery(document).ready(function ($) {
   // Retour au formulaire de connexion depuis l'inscription
   $(".back-to-login").click(function () {
     $(".register-form").hide();
-    $("#loginForm").show();
+    $(".login-form").show();
     $(".show-register-form").show();
-  });
-
-  // Fonction d'inscription lors du clic sur le bouton "Inscription"
-  $(".register-button").click(function () {
-    var email = $(".register-email").val();
-    var displayName = $(".register-display-name").val();
-    var password = $(".register-password").val();
-    var passwordConfirm = $(".register-password-confirm").val();
-
-    // Vérifier que les mots de passe correspondent
-    if (password !== passwordConfirm) {
-      alert("Les mots de passe ne correspondent pas.");
-      return;
-    }
-
-    // Appel de la fonction d'enregistrement avec les paramètres corrects
-    register(email, displayName, password);
   });
 
   // ! FONCTION REGISTER ET LOGIN
 
   // Fonction d'inscription
-  function register(email, displayName, password, passwordConfirm) {
-    // Vérification de la correspondance des mots de passe directement dans la fonction pour plus de clarté
+  function register() {
+    var email = $(".register-email").val();
+    var displayName = $(".register-display-name").val();
+    var password = $(".register-password").val();
+    var passwordConfirm = $(".register-password-confirm").val();
+
     if (password !== passwordConfirm) {
       alert("Les mots de passe ne correspondent pas.");
       return;
@@ -71,82 +70,55 @@ jQuery(document).ready(function ($) {
       }),
       success: function (response) {
         alert("Inscription réussie, veuillez vous connecter.");
+        $(".login-form").show();
         $(".register-form").hide();
-        $("#loginForm").show(); // Assurez-vous que cette référence correspond à votre formulaire de connexion
         $(".show-register-form").show();
+        updateUI();
       },
       error: function (xhr) {
-        // Ajout d'une réponse plus détaillée pour aider au diagnostic des problèmes
         alert("Erreur d'inscription: " + xhr.responseText);
       },
     });
   }
 
+  // Attache le gestionnaire d'événement au bouton d'inscription
+  $(".register-button").click(register);
+
   // Fonction de connexion
-  function login(email, password) {
+  function login() {
+    var email = $("#email").val();
+    var password = $("#password").val();
+
     $.ajax({
       url: "https://kokuauhane-071dbd833182.herokuapp.com/login",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify({ email: email, password: password }),
       success: function (response) {
-        // Assurez-vous que la réponse inclut le displayName et l'access_token
-        if (response.access_token && response.displayName) {
-          localStorage.setItem("jwt", response.access_token);
-          localStorage.setItem("displayName", response.displayName); // Stocker le nom affiché correctement
+        localStorage.setItem("jwt", response.access_token);
+        localStorage.setItem("displayName", response.displayName);
+        console.log(
+          "displayName in localStorage:",
+          localStorage.getItem("displayName")
+        );
 
-          // Mise à jour de l'interface utilisateur pour refléter l'état connecté
-          $(".login-form").hide();
-          $(".user-info .username-display").text(response.displayName); // Afficher le nom affiché
-          $(".user-info").show();
-          $(".logout-button").show(); // Assurez-vous que le bouton de déconnexion est visible
-          $(".show-register-form").hide();
-          updateButtonStates(); // Mise à jour des états des boutons si nécessaire
-        } else {
-          // Gérer le cas où la réponse n'est pas ce qui est attendu
-          alert(
-            "Erreur de connexion: Informations manquantes dans la réponse du serveur."
-          );
-        }
+        updateUI();
       },
       error: function (xhr) {
-        // Gestion des erreurs de connexion
         alert("Erreur de connexion: " + xhr.responseText);
       },
     });
   }
 
+  // Attache le gestionnaire d'événement au bouton de connexion
+  $(".login-button").click(login);
+
   // * Fonction de déconnexion
-  function logout() {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("username");
-    $(".login-form").show();
-    $(".user-info").hide(); // Cacher les infos de l'utilisateur
-    $(".register-form").hide(); // Assurez-vous que le formulaire d'inscription est caché
-    $(".show-register-form").show(); // Réafficher le bouton d'affichage du formulaire d'inscription
-    $(".kh-response").html(""); // Vider l'espace de réponse
-    updateButtonStates();
-  }
-
-  // * Attache les gestionnaires d'événements aux boutons
-
-  // Attachement de l'événement au bouton d'inscription
-  $(".register-button").click(function () {
-    var email = $(".register-email").val();
-    var displayName = $(".register-display-name").val();
-    var password = $(".register-password").val();
-    var passwordConfirm = $(".register-password-confirm").val();
-    register(email, displayName, password, passwordConfirm);
-  });
-
-  $(".login-button").click(function () {
-    var email = $("#email").val(); // Assurez-vous que l'identifiant de l'input email est correct
-    var password = $("#password").val();
-    login(email, password);
-  });
-
+  // Fonction de déconnexion
   $(".logout-button").click(function () {
-    logout();
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("displayName");
+    updateUI();
   });
 
   // ! FIN FONCTION REGISTER ET LOGIN

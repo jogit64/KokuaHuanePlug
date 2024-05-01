@@ -65,10 +65,8 @@ class Kokua_Huane_Widget extends WP_Widget
         <input type="email" id="email" name="email" required>
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" name="password" required>
-        <button type="submit">Se connecter</button>
+        <button class="login-button">Se connecter</button>
     </div>
-
-    <button class="logout-button" style="display:none;">Déconnexion</button>
 
 
     <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
