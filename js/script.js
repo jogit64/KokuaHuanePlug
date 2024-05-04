@@ -206,7 +206,8 @@ jQuery(document).ready(function ($) {
     var inputText = $(".kh-input").val();
     $(".loading-indicator").addClass("active");
     $.ajax({
-      url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
+      //   url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/interact",
       method: "POST",
       contentType: "application/json",
       headers: {
@@ -239,6 +240,7 @@ jQuery(document).ready(function ($) {
             toggleRecognition(true); // Réactivation de la reconnaissance vocale après la fin de la synthèse
             $(".kh-button-micro").prop("disabled", false); // Réactivation du bouton micro
             $(".kh-button-stop").prop("disabled", true); // Désactivation du bouton stop
+            $(".listening-indicator").removeClass("active");
             // isMicrophoneUsed = false;
             updateButtonStates();
           };
