@@ -29,7 +29,9 @@
   color: white;
   font-size: 16px;
   /* overflow-y: auto; */
-  max-height: calc(100vh - 250px);
+  /* max-height: calc(100vh - 250px); */
+  padding-bottom: 50px;
+  /* background-color: #4e5d6c; */
 }
 
 /* ! DESIGN TITRE LIST */
@@ -63,6 +65,7 @@
   font-size: 16px;
   overflow-y: auto; /* Permet le défilement si nécessaire */
   margin-bottom: 150px; /* Espace suffisant pour ne pas être couvert par kh-controls-container */
+  /* background-color: green; */
 }
 
 .kh-response p {
@@ -92,6 +95,20 @@
   margin: 5px;
   padding: 10px;
   cursor: pointer;
+  width: 150px;
+  background-color: #60686f;
+  color: #fff;
+  transition: background-color 0.3s, opacity 0.3s;
+  border: 1px solid #ccc;
+  /* margin-right: 0.5em; */
+  border-radius: 5%;
+  /* margin-top: 1em; */
+}
+
+.confirm-button:hover,
+.cancel-button:hover {
+  background-color: #60686f;
+  opacity: 0.5;
 }
 
 /*
@@ -152,45 +169,11 @@
 /*
 /* 
 /* 
-/* * LES BOUTONS ACTION */
 
-.kh-actions {
-  display: flex;
-  gap: 10px; /* Espace entre les boutons */
-}
 
-.kh-button-action {
-  padding: 10px 20px;
-  border-radius: 20px; /* Coins arrondis */
-  border: 1px solid #cccccc; /* Bordure fine grise */
-  font-size: 16px;
-  cursor: pointer;
-  transition: box-shadow 0.3s ease; /* Animation douce pour l'effet de survol */
-}
-
-/* Style pour le bouton 'Enregistrer une action' */
-.action-button {
-  background-color: #ff4d4d; /* Rouge */
-  color: white;
-}
-
-/* Style pour le bouton 'Rappel Aujourd'hui' */
-.reminder-today-button {
-  background-color: #b8e4d0; /* Vert eau très clair */
-  color: #333;
-}
-
-/* Style pour le bouton 'Rappel Hier' */
-.reminder-yesterday-button {
-  background-color: #b8e4d0; /* Vert eau très clair */
-  color: #333;
-}
-
-.kh-button-action:hover {
-  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.7); /* Effet clair au survol */
-}
 
 /* * LES BOUTONS CONTROLS*/
+
 .kh-button-micro,
 .kh-button-send,
 .kh-button-stop {
@@ -226,6 +209,7 @@
 .kh-button-stop:active:not(:disabled) {
   background-color: #60686f;
 }
+
 .kh-button-micro:focus,
 .kh-button-send:focus,
 .kh-button-stop:focus {

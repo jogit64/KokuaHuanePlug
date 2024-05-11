@@ -16,11 +16,13 @@ jQuery(document).ready(function ($) {
       $(".user-info .username-display").text(
         localStorage.getItem("displayName")
       );
-
       $(".user-info").show();
       $(".logout-button").show();
       $(".show-register-form").hide();
       $(".kh-controls-container").show();
+
+      // Charger les actions seulement si l'utilisateur est connecté
+      loadUserActions();
     } else {
       $(".login-form").show();
       $(".register-form").hide();
@@ -29,6 +31,8 @@ jQuery(document).ready(function ($) {
       $(".show-register-form").show();
       $(".kh-response").html("");
       $(".kh-controls-container").hide();
+      // Ne pas tenter de charger les actions si l'utilisateur n'est pas connecté
+      $(".kh-list").html("<p>Connectez-vous pour voir vos actions.</p>");
     }
   }
 
@@ -84,10 +88,10 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  // Attache le gestionnaire d'événement au bouton d'inscription
+  // * Attache le gestionnaire d'événement au bouton d'inscription
   $(".register-button").click(register);
 
-  // Fonction de connexion
+  // * Fonction de connexion
   function login() {
     var email = $("#email").val();
     var password = $("#password").val();
@@ -100,7 +104,6 @@ jQuery(document).ready(function ($) {
       success: function (response) {
         localStorage.setItem("jwt", response.access_token);
         localStorage.setItem("displayName", response.displayName);
-        loadUserActions();
         updateUI();
       },
       error: function (xhr) {
@@ -110,11 +113,10 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  // Attache le gestionnaire d'événement au bouton de connexion
+  // * Attache le gestionnaire d'événement au bouton de connexion
   $(".login-button").click(login);
 
   // * Fonction de déconnexion
-  // Fonction de déconnexion
   $(".logout-button").click(function () {
     localStorage.removeItem("jwt");
     localStorage.removeItem("displayName");
@@ -339,83 +341,6 @@ jQuery(document).ready(function ($) {
   initializeRecognition();
   updateButtonStates(); // Mise à jour initiale des états des boutons
 
-  // ! maj vers boutons action ---------------------
-
-  // $(".kh-button-action.action-button").click(function () {
-  //   var description = $(".kh-input").val();
-  //   $.ajax({
-  //     url: "https://kokuauhane-071dbd833182.herokuapp.com/record_action",
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("jwt"),
-  //     },
-  //     contentType: "application/json",
-  //     data: JSON.stringify({ description: description }),
-  //     beforeSend: function () {
-  //       $(".loading-indicator").addClass("active");
-  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
-  //         "disabled",
-  //         true
-  //       );
-  //     },
-  //     success: function (response) {
-  //       $(".loading-indicator").removeClass("active");
-  //       alert("Action recorded: " + response.message);
-  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
-  //         "disabled",
-  //         false
-  //       );
-  //     },
-  //     error: function (xhr) {
-  //       $(".loading-indicator").removeClass("active");
-  //       alert("Error recording action: " + xhr.responseText);
-  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
-  //         "disabled",
-  //         false
-  //       );
-  //     },
-  //   });
-  // });
-
-  // $(".reminder-today-button, .reminder-yesterday-button").click(function () {
-  //   var dateType = $(this).hasClass("reminder-today-button")
-  //     ? "today"
-  //     : "yesterday";
-  //   $.ajax({
-  //     url: "https://kokuauhane-071dbd833182.herokuapp.com/recall_events",
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("jwt"),
-  //     },
-  //     contentType: "application/json",
-  //     data: JSON.stringify({ date_type: dateType }),
-  //     beforeSend: function () {
-  //       $(".loading-indicator").addClass("active");
-  //       $(
-  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
-  //       ).prop("disabled", true);
-  //     },
-  //     success: function (response) {
-  //       $(".loading-indicator").removeClass("active");
-  //       if (response.supportive_message) {
-  //         alert("Events: " + response.supportive_message);
-  //       } else {
-  //         alert("No events found for this date.");
-  //       }
-  //       $(
-  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
-  //       ).prop("disabled", false);
-  //     },
-  //     error: function (xhr) {
-  //       $(".loading-indicator").removeClass("active");
-  //       alert("Error fetching events: " + xhr.responseText);
-  //       $(
-  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
-  //       ).prop("disabled", false);
-  //     },
-  //   });
-  // });
-
   // ! Extension get action dans kh-list -------------------
 
   // Fonction pour charger les actions de l'utilisateur après connexion réussie
@@ -428,7 +353,8 @@ jQuery(document).ready(function ($) {
       },
       success: function (data) {
         console.log(data);
-        $(".kh-list").val("");
+        $(".kh-list").html("");
+
         if (
           !data["Aujourd'hui"].length &&
           !data["Hier"].length &&
