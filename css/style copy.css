@@ -6,48 +6,13 @@
   /* height: 100%; */
   position: relative;
 
-  /* height: 100vh; */
+  /* height: 100vh;  */
 
   max-width: 800px; /* Assurez-vous que le widget ne dépasse pas une largeur maximale */
   /* height: 100vh;  */
 
   overflow: hidden;
   color: white;
-  /* background-color: #3672b8; */
-}
-
-/*
-/* 
-/* 
-/* * LA LIST */
-.kh-list {
-  width: 100%;
-  max-width: 800px;
-  margin-top: 30px;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-  color: white;
-  font-size: 16px;
-  /* overflow-y: auto; */
-  max-height: calc(100vh - 250px);
-}
-
-/* ! DESIGN TITRE LIST */
-.day-section {
-  width: 100%; /* Utilisez la largeur complète pour le contexte du titre */
-  margin-bottom: 20px; /* Espacement après chaque section */
-}
-
-.day-title {
-  text-align: center; /* Centre le texte */
-  font-size: 20px; /* Taille de la police pour les titres */
-  font-weight: bold; /* Rend le texte plus épais */
-  color: #fff; /* Couleur du texte (ajustez selon votre thème) */
-  margin: 10px 0; /* Espacement vertical autour du titre */
-  padding: 10px 0; /* Padding pour ajouter de l'espace autour du texte */
-  border-top: 2px solid #4a90e2; /* Ligne au-dessus du titre */
-  border-bottom: 2px solid #4a90e2; /* Ligne en dessous du titre */
-  margin-top: 50px;
 }
 
 /*
@@ -56,13 +21,14 @@
 /* * LA REPONSE */
 .kh-response {
   width: 100%;
+
   max-width: 800px;
-  margin-top: 10px;
+  margin-top: 30px;
+
   font-family: Arial, sans-serif;
   color: white;
   font-size: 16px;
-  overflow-y: auto; /* Permet le défilement si nécessaire */
-  margin-bottom: 150px; /* Espace suffisant pour ne pas être couvert par kh-controls-container */
+  padding-bottom: 150px;
 }
 
 .kh-response p {
@@ -74,24 +40,13 @@
 }
 
 .kh-response .message-content {
-  /* margin-top: 2px; 
-  margin-left: 20px; */
-  display: inline-block;
-  margin: 5px 0;
+  margin-top: 2px; /* Espacement réduit entre le préfixe et le texte */
+  margin-left: 20px; /* Indentation du texte pour le distinguer du préfixe */
 }
 
 .kh-response .prefix {
   font-weight: bold; /* Met en gras les préfixes */
   display: block; /* Affiche le préfixe sur une ligne propre */
-}
-
-/* * Boutons confirmer et annuler en apend */
-
-.confirm-button,
-.cancel-button {
-  margin: 5px;
-  padding: 10px;
-  cursor: pointer;
 }
 
 /*
@@ -100,12 +55,11 @@
 /* * LA ZONE DES CONTROLES et INPUT */
 .kh-controls-container {
   box-sizing: border-box;
-  position: fixed;
-  bottom: 0;
+  position: fixed; /* Position fixe en bas */
+  bottom: 0; /* Aligné au bas de l'écran ou du parent relatif */
   background-color: #2b3e50;
   width: 100%;
   max-width: 800px;
-  z-index: 1000; /* Assurez-vous que les contrôles sont au-dessus des autres éléments */
 }
 
 .kh-actions,
@@ -486,13 +440,4 @@ input[type="password"]:focus {
 .logout-button:hover {
   opacity: 0.8; /* Effet au survol pour le bouton de déconnexion */
   background-color: #2b3e50;
-}
-
-.message-block {
-  text-align: center;
-  margin: 10px 0;
-}
-.message-content {
-  display: inline-block;
-  margin: 5px 0;
 }

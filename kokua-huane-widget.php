@@ -45,61 +45,61 @@ class Kokua_Huane_Widget extends WP_Widget
     {
         echo $args['before_widget'];
 ?>
-<div class="kh-widget">
-    <!-- Barre de statut utilisateur -->
-    <div class="user-info" style="display:none;">
-        <img src="<?php echo plugins_url('assets/user.png', __FILE__); ?>" alt="User" class="user-icon">
-        <span class="username-display"></span>
-        <button class="logout-button">
-            <img src="<?php echo plugins_url('assets/exit.png', __FILE__); ?>" alt="Logout">
-        </button>
-    </div>
+        <div class="kh-widget">
+            <!-- Barre de statut utilisateur -->
+            <div class="user-info" style="display:none;">
+                <img src="<?php echo plugins_url('assets/user.png', __FILE__); ?>" alt="User" class="user-icon">
+                <span class="username-display"></span>
+                <button class="logout-button">
+                    <img src="<?php echo plugins_url('assets/exit.png', __FILE__); ?>" alt="Logout">
+                </button>
+            </div>
 
-    <div class="register-form" style="display:none;">
-        <input type="email" class="register-email" placeholder="Email" required />
-        <input type="text" class="register-display-name" placeholder="Pseudo" />
-        <input type="password" class="register-password" placeholder="Mot de passe" required />
-        <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" required />
-        <button class="register-button">Inscription</button>
-        <button class="back-to-login">Retour à la connexion</button>
-    </div>
-    <button class="show-register-form">Afficher le formulaire d'inscription</button>
-
-
-    <div class="login-form">
-        <input type="email" id="email" name="email" placeholder="Email" required>
-        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
-        <button class="login-button">Se connecter</button>
-    </div>
+            <div class="register-form" style="display:none;">
+                <input type="email" class="register-email" placeholder="Email" required />
+                <input type="text" class="register-display-name" placeholder="Pseudo" />
+                <input type="password" class="register-password" placeholder="Mot de passe" required />
+                <input type="password" class="register-password-confirm" placeholder="Confirmez le mot de passe" required />
+                <button class="register-button">Inscription</button>
+                <button class="back-to-login">Retour à la connexion</button>
+            </div>
+            <button class="show-register-form">Afficher le formulaire d'inscription</button>
 
 
-    <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
-    <div class="kh-response">
+            <div class="login-form">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+                <button class="login-button">Se connecter</button>
+            </div>
 
-    </div>
-    <div class="loading-indicator">
-        <div class="loader">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+
+            <!-- Assurez-vous que le widget utilise toute la hauteur de la fenêtre -->
+            <div class="kh-list">
+
+            </div>
+            <div class="kh-response">
+
+            </div>
+            <div class="loading-indicator">
+                <div class="loader">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            <div class="kh-controls-container">
+                <div class="kh-controls">
+                    <button class="kh-button-micro"><img src="<?php echo plugins_url('assets/micro.png', __FILE__); ?>" alt="Micro"></button>
+                    <button class="kh-button-stop" disabled="disabled"><img src="<?php echo plugins_url('assets/stop.png', __FILE__); ?>" alt="Stop"></button>
+                    <textarea class="kh-input"></textarea>
+                    <button class="kh-button-send" disabled="disabled"><img src="<?php echo plugins_url('assets/send.png', __FILE__); ?>" alt="Send"></button>
+
+
+                    <div class="listening-indicator"></div><!-- Indicateur d'écoute -->
+                </div>
+            </div>
+
         </div>
-    </div>
-    <div class="kh-controls-container">
-        <div class="kh-controls">
-            <button class="kh-button-micro"><img src="<?php echo plugins_url('assets/micro.png', __FILE__); ?>"
-                    alt="Micro"></button>
-            <button class="kh-button-stop" disabled="disabled"><img
-                    src="<?php echo plugins_url('assets/stop.png', __FILE__); ?>" alt="Stop"></button>
-            <textarea class="kh-input"></textarea>
-            <button class="kh-button-send" disabled="disabled"><img
-                    src="<?php echo plugins_url('assets/send.png', __FILE__); ?>" alt="Send"></button>
-
-
-            <div class="listening-indicator"></div><!-- Indicateur d'écoute -->
-        </div>
-    </div>
-
-</div>
 
 
 <?php

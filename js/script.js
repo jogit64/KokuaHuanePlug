@@ -100,6 +100,7 @@ jQuery(document).ready(function ($) {
       success: function (response) {
         localStorage.setItem("jwt", response.access_token);
         localStorage.setItem("displayName", response.displayName);
+        loadUserActions();
         updateUI();
       },
       error: function (xhr) {
@@ -207,7 +208,8 @@ jQuery(document).ready(function ($) {
     $(".loading-indicator").addClass("active");
     $.ajax({
       //   url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
-      url: "https://kokuauhane-071dbd833182.herokuapp.com/interact",
+      // url: "https://kokuauhane-071dbd833182.herokuapp.com/interact",
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/propose_event",
       method: "POST",
       contentType: "application/json",
       headers: {
@@ -223,14 +225,71 @@ jQuery(document).ready(function ($) {
       success: function (response) {
         $(".loading-indicator").removeClass("active");
         let currentHtml = $(".kh-response").html();
+
+        let newMessage = response.message || "Pas de réponse spécifique."; // Gérer si message est undefined ou vide
+        let newEvent = response.event
+          ? response.event
+          : "Pas d'événement détecté.";
+
         $(".kh-response").html(
-          currentHtml +
-            "<div class='message-block'><span class='prefix'>USER:</span><div class='message-content'>" +
-            inputText +
-            "</div></div><div class='message-block'><span class='prefix'>STAN:</span><div class='message-content'>" +
-            response.response +
+          "<div class='message-block'><div class='message-content'>" +
+            newMessage +
+            "</div></div>" +
+            "<div class='message-block'><div class='message-content'>" +
+            newEvent +
             "</div></div>"
         );
+
+        // * maj mood boutons confimer et annuler en append -------------
+
+        // Condition pour ajouter les boutons seulement si un événement est détecté
+        if (response.event && response.event !== "Pas d'événement détecté.") {
+          $(".kh-response").append(
+            "<div class='message-block'>" +
+              "<button class='confirm-button'>Confirmer</button>" +
+              "<button class='cancel-button'>Annuler</button>" +
+              "</div>"
+          );
+        }
+
+        // Ajuster le scroll si nécessaire pour montrer le contenu ajouté
+        $(".kh-response").scrollTop($(".kh-response")[0].scrollHeight);
+
+        // Écouteurs d'événements pour les boutons
+        $(".confirm-button").click(function () {
+          // Envoyer la confirmation à la route /confirm_event
+          $.ajax({
+            url: "https://kokuauhane-071dbd833182.herokuapp.com/confirm_event",
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("jwt"),
+            },
+            data: JSON.stringify({
+              confirmation: "Confirmer",
+              event: response.event,
+            }),
+            success: function () {
+              $(".kh-response").html(
+                "<div class='message-block'>Événement confirmé.</div>"
+              );
+              loadUserActions();
+            },
+            error: function () {
+              $(".kh-response").html(
+                "<div class='message-block'>Erreur lors de la confirmation.</div>"
+              );
+            },
+          });
+        });
+
+        $(".cancel-button").click(function () {
+          // Vider la zone de réponse
+          $(".kh-response").empty();
+        });
+
+        // * maj mood boutons confimer et annuler en append -------------
+
         $(".kh-input").val("");
         window.scrollTo(0, document.body.scrollHeight);
 
@@ -279,4 +338,123 @@ jQuery(document).ready(function ($) {
   // Initialisation de la reconnaissance vocale
   initializeRecognition();
   updateButtonStates(); // Mise à jour initiale des états des boutons
+
+  // ! maj vers boutons action ---------------------
+
+  // $(".kh-button-action.action-button").click(function () {
+  //   var description = $(".kh-input").val();
+  //   $.ajax({
+  //     url: "https://kokuauhane-071dbd833182.herokuapp.com/record_action",
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("jwt"),
+  //     },
+  //     contentType: "application/json",
+  //     data: JSON.stringify({ description: description }),
+  //     beforeSend: function () {
+  //       $(".loading-indicator").addClass("active");
+  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
+  //         "disabled",
+  //         true
+  //       );
+  //     },
+  //     success: function (response) {
+  //       $(".loading-indicator").removeClass("active");
+  //       alert("Action recorded: " + response.message);
+  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
+  //         "disabled",
+  //         false
+  //       );
+  //     },
+  //     error: function (xhr) {
+  //       $(".loading-indicator").removeClass("active");
+  //       alert("Error recording action: " + xhr.responseText);
+  //       $(".kh-button-action, .kh-button-micro, .kh-input").prop(
+  //         "disabled",
+  //         false
+  //       );
+  //     },
+  //   });
+  // });
+
+  // $(".reminder-today-button, .reminder-yesterday-button").click(function () {
+  //   var dateType = $(this).hasClass("reminder-today-button")
+  //     ? "today"
+  //     : "yesterday";
+  //   $.ajax({
+  //     url: "https://kokuauhane-071dbd833182.herokuapp.com/recall_events",
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("jwt"),
+  //     },
+  //     contentType: "application/json",
+  //     data: JSON.stringify({ date_type: dateType }),
+  //     beforeSend: function () {
+  //       $(".loading-indicator").addClass("active");
+  //       $(
+  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
+  //       ).prop("disabled", true);
+  //     },
+  //     success: function (response) {
+  //       $(".loading-indicator").removeClass("active");
+  //       if (response.supportive_message) {
+  //         alert("Events: " + response.supportive_message);
+  //       } else {
+  //         alert("No events found for this date.");
+  //       }
+  //       $(
+  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
+  //       ).prop("disabled", false);
+  //     },
+  //     error: function (xhr) {
+  //       $(".loading-indicator").removeClass("active");
+  //       alert("Error fetching events: " + xhr.responseText);
+  //       $(
+  //         ".reminder-today-button, .reminder-yesterday-button, .kh-button-micro"
+  //       ).prop("disabled", false);
+  //     },
+  //   });
+  // });
+
+  // ! Extension get action dans kh-list -------------------
+
+  // Fonction pour charger les actions de l'utilisateur après connexion réussie
+  function loadUserActions() {
+    $.ajax({
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/get_actions",
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"), // Utilisation du JWT
+      },
+      success: function (data) {
+        console.log(data);
+        $(".kh-list").val("");
+        if (
+          !data["Aujourd'hui"].length &&
+          !data["Hier"].length &&
+          !data["Avant-Hier"].length
+        ) {
+          $(".kh-list").html("<p>Aucune action enregistrée récemment.</p>");
+        } else {
+          for (let day in data) {
+            if (data[day].length) {
+              let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
+              for (let action of data[day]) {
+                // Utilisez directement 'action' ici au lieu de 'action.action'
+                sectionHtml += `<div class='action-item'>${action}</div>`;
+              }
+              sectionHtml += "</div>";
+              $(".kh-list").append(sectionHtml);
+            }
+          }
+        }
+      },
+
+      error: function () {
+        $(".kh-list").html(
+          "<p>Erreur lors du chargement des actions. Veuillez réessayer plus tard.</p>"
+        );
+      },
+    });
+  }
 });
