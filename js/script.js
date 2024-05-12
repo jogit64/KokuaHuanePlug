@@ -367,30 +367,21 @@ jQuery(document).ready(function ($) {
               let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
               for (let event of data[day]) {
                 // Append each event with favorite, edit, and delete buttons
-                sectionHtml += `<div class='action-item'>
-                        <button onclick="addToFavorites(${
-                          event.id
-                        })"><i class='fa fa-heart'></i></button>
-                        <div class="event-description">${
-                          event.description
-                        }</div>
-                        <div class="edit-delete">
-                          <button onclick="editEvent(${
-                            event.id
-                          }, '${event.description.replace(
-                  /'/g,
-                  "\\'"
-                )}')"><i class='fa fa-pencil'></i></button>
-                          <button onclick="deleteEvent(${
-                            event.id
-                          })"><i class='fa fa-trash'></i></button>
-                        </div>
-                      </div>`;
+                sectionHtml += `<div class='action-item' data-event-id="${event.id}">
+        <button class="add-to-favorites"><i class='fa fa-heart'></i></button>
+        <div class="event-description">${event.description}</div>
+        <div class="edit-delete">
+          <button class="edit-event"><i class='fa fa-pencil'></i></button>
+          <button class="delete-event"><i class='fa fa-trash'></i></button>
+        </div>
+      </div>`;
               }
               sectionHtml += "</div>";
               $(".kh-list").append(sectionHtml);
             }
           }
+
+          attachButtonListeners();
         }
       },
 
@@ -402,9 +393,46 @@ jQuery(document).ready(function ($) {
     });
   }
 
+  // Fonction pour ajouter des écouteurs d'événements click aux boutons
+  function attachButtonListeners() {
+    $(".kh-list").on(
+      "click",
+      ".action-item .edit-delete .fa-pencil",
+      function () {
+        // Récupérer l'ID de l'événement associé
+        let eventId = $(this).closest(".action-item").data("eventId");
+        // Récupérer la description de l'événement associé
+        let eventDescription = $(this)
+          .closest(".action-item")
+          .find(".event-description")
+          .text();
+        // Appeler la fonction editEvent avec l'ID et la description de l'événement
+        editEvent(eventId, eventDescription);
+      }
+    );
+
+    $(".kh-list").on(
+      "click",
+      ".action-item .edit-delete .fa-trash",
+      function () {
+        // Récupérer l'ID de l'événement associé
+        let eventId = $(this).closest(".action-item").data("eventId");
+        // Appeler la fonction deleteEvent avec l'ID de l'événement
+        deleteEvent(eventId);
+      }
+    );
+
+    $(".kh-list").on("click", ".action-item .fa-heart", function () {
+      // Récupérer l'ID de l'événement associé
+      let eventId = $(this).closest(".action-item").data("eventId");
+      // Appeler la fonction addToFavorites avec l'ID de l'événement
+      addToFavorites(eventId);
+    });
+  }
+
   function addToFavorites(eventId) {
     $.ajax({
-      url: `https://<your-heroku-app-name>.herokuapp.com/add_to_favorites/${eventId}`,
+      url: `https://kokuauhane-071dbd833182.herokuapp.com/add_to_favorites/${eventId}`,
       method: "POST",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("jwt"),
@@ -419,19 +447,27 @@ jQuery(document).ready(function ($) {
   }
 
   function deleteEvent(eventId) {
-    $.ajax({
-      url: `https://<your-heroku-app-name>.herokuapp.com/delete_event/${eventId}`,
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
-      },
-      success: function (response) {
-        alert("Event deleted!");
-      },
-      error: function () {
-        alert("Error deleting event.");
-      },
-    });
+    // Afficher une boîte de dialogue de confirmation
+    if (confirm("Êtes-vous sûr de vouloir supprimer cette action ?")) {
+      $.ajax({
+        url: `https://kokuauhane-071dbd833182.herokuapp.com/delete_event/${eventId}`,
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt"),
+        },
+
+        success: function (response) {
+          alert("Action supprimée !");
+          location.reload(); // Recharge la page pour mettre à jour la vue
+        },
+        error: function () {
+          alert("Error deleting event.");
+        },
+      });
+    } else {
+      // Si l'utilisateur annule, vous pouvez ajouter une action ici, par exemple :
+      console.log("Action supprimée.");
+    }
   }
 
   function editEvent(eventId, currentDescription) {
@@ -441,7 +477,7 @@ jQuery(document).ready(function ($) {
     );
     if (newDescription !== null) {
       $.ajax({
-        url: `https://<your-heroku-app-name>.herokuapp.com/update_event/${eventId}`,
+        url: `https://kokuauhane-071dbd833182.herokuapp.com/update_event/${eventId}`,
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("jwt"),
@@ -449,7 +485,7 @@ jQuery(document).ready(function ($) {
         contentType: "application/json",
         data: JSON.stringify({ description: newDescription }),
         success: function (response) {
-          alert("Event updated!");
+          alert("Action mise à jour !");
           location.reload(); // Refresh the page to show the updated list
         },
         error: function () {
