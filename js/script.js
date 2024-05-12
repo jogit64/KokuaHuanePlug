@@ -365,9 +365,27 @@ jQuery(document).ready(function ($) {
           for (let day in data) {
             if (data[day].length) {
               let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
-              for (let action of data[day]) {
-                // Utilisez directement 'action' ici au lieu de 'action.action'
-                sectionHtml += `<div class='action-item'>${action}</div>`;
+              for (let event of data[day]) {
+                // Append each event with favorite, edit, and delete buttons
+                sectionHtml += `<div class='action-item'>
+                        <button onclick="addToFavorites(${
+                          event.id
+                        })"><i class='fa fa-heart'></i></button>
+                        <div class="event-description">${
+                          event.description
+                        }</div>
+                        <div class="edit-delete">
+                          <button onclick="editEvent(${
+                            event.id
+                          }, '${event.description.replace(
+                  /'/g,
+                  "\\'"
+                )}')"><i class='fa fa-pencil'></i></button>
+                          <button onclick="deleteEvent(${
+                            event.id
+                          })"><i class='fa fa-trash'></i></button>
+                        </div>
+                      </div>`;
               }
               sectionHtml += "</div>";
               $(".kh-list").append(sectionHtml);
@@ -382,5 +400,62 @@ jQuery(document).ready(function ($) {
         );
       },
     });
+  }
+
+  function addToFavorites(eventId) {
+    $.ajax({
+      url: `https://<your-heroku-app-name>.herokuapp.com/add_to_favorites/${eventId}`,
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      success: function (response) {
+        alert("Added to favorites!");
+      },
+      error: function () {
+        alert("Error adding to favorites.");
+      },
+    });
+  }
+
+  function deleteEvent(eventId) {
+    $.ajax({
+      url: `https://<your-heroku-app-name>.herokuapp.com/delete_event/${eventId}`,
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      success: function (response) {
+        alert("Event deleted!");
+      },
+      error: function () {
+        alert("Error deleting event.");
+      },
+    });
+  }
+
+  function editEvent(eventId, currentDescription) {
+    const newDescription = prompt(
+      "Enter the new description for the event:",
+      currentDescription
+    );
+    if (newDescription !== null) {
+      $.ajax({
+        url: `https://<your-heroku-app-name>.herokuapp.com/update_event/${eventId}`,
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt"),
+        },
+        contentType: "application/json",
+        data: JSON.stringify({ description: newDescription }),
+        success: function (response) {
+          alert("Event updated!");
+          location.reload(); // Refresh the page to show the updated list
+        },
+        error: function () {
+          alert("Error updating event.");
+        },
+      });
+    }
   }
 });

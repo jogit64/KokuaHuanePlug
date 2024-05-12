@@ -12,14 +12,18 @@ function kh_enqueue_scripts()
     global $post;
     // Vérifier si le shortcode du widget Kokua Huane est présent dans le contenu de la page
     if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'kokua_huane_widget')) {
-        wp_enqueue_style('kh-style', plugins_url('css/style.css', __FILE__)); // Charger le CSS
-        wp_enqueue_script('kh-script', plugins_url('js/script.js', __FILE__), array('jquery'), null, true); // Charger le JS
+        // Charger le CSS de votre plugin
+        wp_enqueue_style('kh-style', plugins_url('css/style.css', __FILE__));
+
+        // Charger le JavaScript de votre plugin
+        wp_enqueue_script('kh-script', plugins_url('js/script.js', __FILE__), array('jquery'), null, true);
+
+        // Charger FontAwesome depuis le CDN
+        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
     }
 }
 
 add_action('wp_enqueue_scripts', 'kh_enqueue_scripts');
-
-
 
 // Enregistrement du widget
 function register_kokua_huane_widget()

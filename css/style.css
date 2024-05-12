@@ -34,6 +34,56 @@
   /* background-color: #4e5d6c; */
 }
 
+/* * les icones de list */
+
+.action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.edit-delete {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.event-description {
+  flex-grow: 1;
+  margin: 0 10px;
+}
+
+.action-item button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #60686f; /* Assurez-vous que cela soit lisible sur votre fond */
+  transition: color 0.3s, opacity 0.3s;
+}
+
+.action-item button:hover {
+  color: #505960; /* Sombre légèrement au survol pour un contraste */
+  opacity: 0.7;
+}
+
+.fa-heart {
+  color: #ff6666; /* Rouge pour le cœur, vide par défaut */
+}
+
+.fa-heart.filled {
+  color: #ff0000; /* Rouge plus intense pour les cœurs sélectionnés */
+}
+
+.fa-pencil {
+  color: #ccc; /* Orange pour le crayon, compatible avec votre charte */
+}
+
+.fa-trash {
+  color: #ccc; /* Teinte rouge-orangée pour la poubelle, visible sur fond sombre */
+}
+
 /* ! DESIGN TITRE LIST */
 .day-section {
   width: 100%; /* Utilisez la largeur complète pour le contexte du titre */
