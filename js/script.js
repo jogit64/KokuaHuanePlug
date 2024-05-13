@@ -362,6 +362,29 @@ jQuery(document).ready(function ($) {
         ) {
           $(".kh-list").html("<p>Aucune action enregistrée récemment.</p>");
         } else {
+          // ! version reverse
+          //     let days = Object.keys(data).sort().reverse();
+
+          //     for (let day of days) {
+          //       if (data[day].length) {
+          //         let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
+          //         for (let event of data[day]) {
+          //           // Append each event with favorite, edit, and delete buttons
+          //           sectionHtml += `<div class='action-item' data-event-id="${event.id}">
+          //   <button class="add-to-favorites"><i class='fa fa-heart'></i></button>
+          //   <div class="event-description">${event.description}</div>
+          //   <div class="edit-delete">
+          //     <button class="edit-event"><i class='fa fa-pencil'></i></button>
+          //     <button class="delete-event"><i class='fa fa-trash'></i></button>
+          //   </div>
+          // </div>`;
+          //         }
+          //         sectionHtml += "</div>";
+          //         $(".kh-list").append(sectionHtml);
+          //       }
+          //     }
+          // ! fin version reverse
+
           for (let day in data) {
             if (data[day].length) {
               let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
