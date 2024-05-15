@@ -1,5 +1,18 @@
 // Encapsulation dans jQuery(document).ready pour garantir que le script s'exécute après le chargement complet du DOM
 jQuery(document).ready(function ($) {
+  // Vérifier s'il existe une position de défilement enregistrée
+  // const savedScrollPosition = localStorage.getItem("scrollPosition");
+  // if (savedScrollPosition) {
+  //   window.scrollTo(0, parseInt(savedScrollPosition, 10));
+  //   // Supprimer la position de défilement enregistrée après restauration
+  //   localStorage.removeItem("scrollPosition");
+  // }
+
+  // Utiliser setTimeout pour décaler le défilement jusqu'à ce que tout soit chargé
+  setTimeout(function () {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, 100); // Un délai de 100 ms est généralement suffisant, ajustez selon besoin
+
   // Déclarations des variables liées à la reconnaissance vocale et à la synthèse vocale
   let recognition;
   let synth = window.speechSynthesis;
@@ -272,6 +285,7 @@ jQuery(document).ready(function ($) {
               event: response.event,
             }),
             success: function () {
+              window.scrollTo(0, document.body.scrollHeight);
               $(".kh-response").html(
                 "<div class='message-block'>Événement confirmé.</div>"
               );
@@ -362,52 +376,30 @@ jQuery(document).ready(function ($) {
         ) {
           $(".kh-list").html("<p>Aucune action enregistrée récemment.</p>");
         } else {
-          // ! version reverse
-          //     let days = Object.keys(data).sort().reverse();
-
-          //     for (let day of days) {
-          //       if (data[day].length) {
-          //         let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
-          //         for (let event of data[day]) {
-          //           // Append each event with favorite, edit, and delete buttons
-          //           sectionHtml += `<div class='action-item' data-event-id="${event.id}">
-          //   <button class="add-to-favorites"><i class='fa fa-heart'></i></button>
-          //   <div class="event-description">${event.description}</div>
-          //   <div class="edit-delete">
-          //     <button class="edit-event"><i class='fa fa-pencil'></i></button>
-          //     <button class="delete-event"><i class='fa fa-trash'></i></button>
-          //   </div>
-          // </div>`;
-          //         }
-          //         sectionHtml += "</div>";
-          //         $(".kh-list").append(sectionHtml);
-          //       }
-          //     }
-          // ! fin version reverse
-
-          for (let day in data) {
+          let days = ["Aujourd'hui", "Hier", "Avant-Hier"].reverse();
+          for (let day of days) {
             if (data[day].length) {
               let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
               for (let event of data[day]) {
-                // Append each event with favorite, edit, and delete buttons
+                let heartClass = event.isFavorite
+                  ? "fa fa-heart filled"
+                  : "fa fa-heart";
                 sectionHtml += `<div class='action-item' data-event-id="${event.id}">
-        <button class="add-to-favorites"><i class='fa fa-heart'></i></button>
-        <div class="event-description">${event.description}</div>
-        <div class="edit-delete">
-          <button class="edit-event"><i class='fa fa-pencil'></i></button>
-          <button class="delete-event"><i class='fa fa-trash'></i></button>
-        </div>
-      </div>`;
+    <button class="add-to-favorites"><i class='${heartClass}'></i></button>
+    <div class="event-description">${event.description}</div>
+    <div class="edit-delete">
+        <button class="edit-event"><i class='fa fa-pencil'></i></button>
+        <button class="delete-event"><i class='fa fa-trash'></i></button>
+    </div>
+</div>`;
               }
               sectionHtml += "</div>";
               $(".kh-list").append(sectionHtml);
             }
           }
-
           attachButtonListeners();
         }
       },
-
       error: function () {
         $(".kh-list").html(
           "<p>Erreur lors du chargement des actions. Veuillez réessayer plus tard.</p>"
@@ -445,15 +437,20 @@ jQuery(document).ready(function ($) {
       }
     );
 
-    $(".kh-list").on("click", ".action-item .fa-heart", function () {
-      // Récupérer l'ID de l'événement associé
+    $(".kh-list").on("click", ".add-to-favorites .fa-heart", function () {
       let eventId = $(this).closest(".action-item").data("eventId");
-      // Appeler la fonction addToFavorites avec l'ID de l'événement
-      addToFavorites(eventId);
+      let isFilled = $(this).hasClass("filled");
+      if (isFilled) {
+        // Appeler la fonction pour supprimer des favoris
+        removeFromFavorites(eventId, $(this));
+      } else {
+        // Appeler la fonction pour ajouter aux favoris
+        addToFavorites(eventId, $(this));
+      }
     });
   }
 
-  function addToFavorites(eventId) {
+  function addToFavorites(eventId, heartIcon) {
     $.ajax({
       url: `https://kokuauhane-071dbd833182.herokuapp.com/add_to_favorites/${eventId}`,
       method: "POST",
@@ -462,9 +459,27 @@ jQuery(document).ready(function ($) {
       },
       success: function (response) {
         alert("Added to favorites!");
+        heartIcon.addClass("filled");
       },
       error: function () {
         alert("Error adding to favorites.");
+      },
+    });
+  }
+
+  function removeFromFavorites(eventId, heartIcon) {
+    $.ajax({
+      url: `https://kokuauhane-071dbd833182.herokuapp.com/remove_from_favorites/${eventId}`,
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      success: function (response) {
+        alert("Removed from favorites!");
+        heartIcon.removeClass("filled");
+      },
+      error: function () {
+        alert("Error removing from favorites.");
       },
     });
   }
@@ -481,7 +496,11 @@ jQuery(document).ready(function ($) {
 
         success: function (response) {
           alert("Action supprimée !");
-          location.reload(); // Recharge la page pour mettre à jour la vue
+          // localStorage.setItem(
+          //   "scrollPosition",
+          //   window.scrollY || document.documentElement.scrollTop
+          // );
+          location.reload();
         },
         error: function () {
           alert("Error deleting event.");
