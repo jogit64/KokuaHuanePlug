@@ -9,9 +9,50 @@ jQuery(document).ready(function ($) {
   // }
 
   // Utiliser setTimeout pour décaler le défilement jusqu'à ce que tout soit chargé
+  // setTimeout(function () {
+  //   window.scrollTo(0, document.body.scrollHeight);
+  // }, 100);
+
+  function checkSession() {
+    $.ajax({
+      url: "https://kokuauhane-071dbd833182.herokuapp.com/check_session",
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+      timeout: 5000, // Définir un délai d'attente de 5 secondes
+      success: function (response) {
+        if (!response.logged_in) {
+          alert("Votre session a expiré. Veuillez vous reconnecter.");
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("displayName");
+          updateUI();
+        }
+      },
+      error: function (xhr, status, error) {
+        if (status === "timeout") {
+          alert(
+            "Le serveur est actuellement inactif. Veuillez réessayer plus tard."
+          );
+        } else {
+          alert(
+            "Erreur lors de la vérification de la session. Veuillez réessayer."
+          );
+        }
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("displayName");
+        updateUI();
+      },
+    });
+  }
+
+  // Appeler la fonction checkSession toutes les 5 minutes
+  setInterval(checkSession, 300000); // 300000 ms = 5 minutes
+
+  // Utiliser setTimeout pour décaler le défilement jusqu'à ce que tout soit chargé
   setTimeout(function () {
     window.scrollTo(0, document.body.scrollHeight);
-  }, 100); // Un délai de 100 ms est généralement suffisant, ajustez selon besoin
+  }, 100);
 
   // Déclarations des variables liées à la reconnaissance vocale et à la synthèse vocale
   let recognition;
@@ -222,8 +263,6 @@ jQuery(document).ready(function ($) {
     var inputText = $(".kh-input").val();
     $(".loading-indicator").addClass("active");
     $.ajax({
-      //   url: "https://kokuauhane-071dbd833182.herokuapp.com/ask",
-      // url: "https://kokuauhane-071dbd833182.herokuapp.com/interact",
       url: "https://kokuauhane-071dbd833182.herokuapp.com/propose_event",
       method: "POST",
       contentType: "application/json",
@@ -284,11 +323,15 @@ jQuery(document).ready(function ($) {
               confirmation: "Confirmer",
               event: response.event,
             }),
-            success: function () {
-              window.scrollTo(0, document.body.scrollHeight);
+            success: function (confirmResponse) {
               $(".kh-response").html(
                 "<div class='message-block'>Événement confirmé.</div>"
               );
+
+              // Ajouter l'événement directement dans la liste
+              addEventToDOM("Aujourd'hui", confirmResponse.event);
+
+              // Recharger les événements depuis le serveur
               loadUserActions();
             },
             error: function () {
@@ -304,8 +347,6 @@ jQuery(document).ready(function ($) {
           $(".kh-response").empty();
         });
 
-        // * maj mood boutons confimer et annuler en append -------------
-
         $(".kh-input").val("");
         window.scrollTo(0, document.body.scrollHeight);
 
@@ -316,7 +357,6 @@ jQuery(document).ready(function ($) {
             $(".kh-button-micro").prop("disabled", false); // Réactivation du bouton micro
             $(".kh-button-stop").prop("disabled", true); // Désactivation du bouton stop
             $(".listening-indicator").removeClass("active");
-            // isMicrophoneUsed = false;
             updateButtonStates();
           };
           synth.speak(utterance);
@@ -337,6 +377,28 @@ jQuery(document).ready(function ($) {
       },
     });
   });
+
+  // Fonction pour ajouter un événement au DOM
+  function addEventToDOM(day, eventDescription) {
+    let sectionHtml = `<div class='action-item' data-event-id="new">
+    <button class="add-to-favorites"><i class='fa fa-heart'></i></button>
+    <div class="event-description">${eventDescription}</div>
+    <div class="edit-delete">
+      <button class="edit-event"><i class='fa fa-pencil'></i></button>
+      <button class="delete-event"><i class='fa fa-trash'></i></button>
+    </div>
+  </div>`;
+
+    // Vérifier si une section "Aujourd'hui" existe déjà
+    let todaySection = $(".day-title:contains('Aujourd\\'hui')").parent();
+    if (todaySection.length) {
+      todaySection.append(sectionHtml);
+    } else {
+      $(".kh-list").prepend(
+        `<div class='day-section'><div class='day-title'>Aujourd'hui</div>${sectionHtml}</div>`
+      );
+    }
+  }
 
   // Désactivation du bouton d'envoi et du bouton micro si le champ de saisie est vide, sinon activation
   $(".kh-input").on("input", function () {
@@ -410,41 +472,38 @@ jQuery(document).ready(function ($) {
 
   // Fonction pour ajouter des écouteurs d'événements click aux boutons
   function attachButtonListeners() {
+    // Supprimer d'abord les écouteurs précédents pour éviter les déclenchements multiples
+    $(".kh-list").off("click", ".action-item .edit-delete .fa-pencil");
     $(".kh-list").on(
       "click",
       ".action-item .edit-delete .fa-pencil",
       function () {
-        // Récupérer l'ID de l'événement associé
         let eventId = $(this).closest(".action-item").data("eventId");
-        // Récupérer la description de l'événement associé
         let eventDescription = $(this)
           .closest(".action-item")
           .find(".event-description")
           .text();
-        // Appeler la fonction editEvent avec l'ID et la description de l'événement
         editEvent(eventId, eventDescription);
       }
     );
 
+    $(".kh-list").off("click", ".action-item .edit-delete .fa-trash");
     $(".kh-list").on(
       "click",
       ".action-item .edit-delete .fa-trash",
       function () {
-        // Récupérer l'ID de l'événement associé
         let eventId = $(this).closest(".action-item").data("eventId");
-        // Appeler la fonction deleteEvent avec l'ID de l'événement
         deleteEvent(eventId);
       }
     );
 
+    $(".kh-list").off("click", ".add-to-favorites .fa-heart");
     $(".kh-list").on("click", ".add-to-favorites .fa-heart", function () {
       let eventId = $(this).closest(".action-item").data("eventId");
       let isFilled = $(this).hasClass("filled");
       if (isFilled) {
-        // Appeler la fonction pour supprimer des favoris
         removeFromFavorites(eventId, $(this));
       } else {
-        // Appeler la fonction pour ajouter aux favoris
         addToFavorites(eventId, $(this));
       }
     });
