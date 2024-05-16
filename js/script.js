@@ -14,6 +14,10 @@ jQuery(document).ready(function ($) {
   // }, 100);
 
   function checkSession() {
+    if (!localStorage.getItem("jwt")) {
+      // Si l'utilisateur n'est pas connecté, ne pas vérifier la session
+      return;
+    }
     $.ajax({
       url: "https://kokuauhane-071dbd833182.herokuapp.com/check_session",
       method: "GET",
