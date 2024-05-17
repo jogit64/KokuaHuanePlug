@@ -239,7 +239,7 @@ jQuery(document).ready(function ($) {
     // $(".kh-button-stop").prop("disabled", !isRecognizing && !synth.speaking);
 
     $(".kh-input").prop("disabled", false);
-    $(".kh-input").focus();
+    // $(".kh-input").focus();
   }
 
   // Gestion des clics sur le bouton micro pour démarrer la reconnaissance
