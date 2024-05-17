@@ -39,7 +39,7 @@ jQuery(document).ready(function ($) {
             "Le serveur est actuellement inactif. Veuillez réessayer plus tard."
           );
         } else {
-          alert("Vous avez été déconnecté.");
+          alert("Votre session a expiré. Veuillez vous reconnecter.");
         }
         localStorage.removeItem("jwt");
         localStorage.removeItem("displayName");
