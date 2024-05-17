@@ -39,9 +39,7 @@ jQuery(document).ready(function ($) {
             "Le serveur est actuellement inactif. Veuillez réessayer plus tard."
           );
         } else {
-          alert(
-            "Time out : session arrêtée par sécurité. Veuillez vous reconnecter."
-          );
+          alert("Vous avez été déconnecté.");
         }
         localStorage.removeItem("jwt");
         localStorage.removeItem("displayName");
