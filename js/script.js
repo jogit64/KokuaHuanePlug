@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
           );
         } else {
           alert(
-            "Erreur lors de la vérification de la session. Veuillez réessayer."
+            "Time out : session arrêtée par sécurité. Veuillez vous reconnecter."
           );
         }
         localStorage.removeItem("jwt");
@@ -54,9 +54,9 @@ jQuery(document).ready(function ($) {
   setInterval(checkSession, 300000); // 300000 ms = 5 minutes
 
   // Utiliser setTimeout pour décaler le défilement jusqu'à ce que tout soit chargé
-  setTimeout(function () {
-    window.scrollTo(0, document.body.scrollHeight);
-  }, 100);
+  // setTimeout(function () {
+  //   window.scrollTo(0, document.body.scrollHeight);
+  // }, 100);
 
   // Déclarations des variables liées à la reconnaissance vocale et à la synthèse vocale
   let recognition;
@@ -262,6 +262,44 @@ jQuery(document).ready(function ($) {
     updateButtonStates();
   });
 
+  // Fonction pour afficher la modal
+  function showModal(message, event, confirmCallback, cancelCallback) {
+    const modal = $("#confirmationModal");
+    modal.find(".modal-message").text(message);
+    modal.show();
+
+    // Gestion des clics sur les boutons de la modal
+    modal
+      .find(".confirm-button")
+      .off("click")
+      .on("click", function () {
+        confirmCallback(event);
+        modal.hide();
+      });
+
+    modal
+      .find(".cancel-button")
+      .off("click")
+      .on("click", function () {
+        cancelCallback();
+        modal.hide();
+      });
+
+    modal
+      .find(".close-button")
+      .off("click")
+      .on("click", function () {
+        modal.hide();
+      });
+
+    // Fermer la modal si l'utilisateur clique en dehors de celle-ci
+    $(window).on("click", function (event) {
+      if ($(event.target).is(modal)) {
+        modal.hide();
+      }
+    });
+  }
+
   // Envoi d'une requête POST avec le texte reconnu ou saisi
   $(".kh-button-send").click(function () {
     var inputText = $(".kh-input").val();
@@ -352,7 +390,7 @@ jQuery(document).ready(function ($) {
         });
 
         $(".kh-input").val("");
-        window.scrollTo(0, document.body.scrollHeight);
+        // window.scrollTo(0, document.body.scrollHeight);
 
         if (isMicrophoneUsed) {
           let utterance = new SpeechSynthesisUtterance(response.response);
@@ -442,28 +480,36 @@ jQuery(document).ready(function ($) {
         ) {
           $(".kh-list").html("<p>Aucune action enregistrée récemment.</p>");
         } else {
-          let days = ["Aujourd'hui", "Hier", "Avant-Hier"].reverse();
-          for (let day of days) {
+          let days = ["Aujourd'hui", "Hier", "Avant-Hier"];
+          for (let i = 0; i < days.length; i++) {
+            let day = days[i];
             if (data[day].length) {
-              let sectionHtml = `<div class='day-section'><div class='day-title'>${day}</div>`;
+              let sectionHtml = `<div class='day-section'>
+              <div class='day-title' data-toggle='${
+                i === 0 ? "open" : "closed"
+              }'>${day}</div>
+              <div class='actions-list' style='display: ${
+                i === 0 ? "block" : "none"
+              };'>`;
               for (let event of data[day]) {
                 let heartClass = event.isFavorite
                   ? "fa fa-heart filled"
                   : "fa fa-heart";
                 sectionHtml += `<div class='action-item' data-event-id="${event.id}">
-    <button class="add-to-favorites"><i class='${heartClass}'></i></button>
-    <div class="event-description">${event.description}</div>
-    <div class="edit-delete">
-        <button class="edit-event"><i class='fa fa-pencil'></i></button>
-        <button class="delete-event"><i class='fa fa-trash'></i></button>
-    </div>
-</div>`;
+                <button class="add-to-favorites"><i class='${heartClass}'></i></button>
+                <div class="event-description">${event.description}</div>
+                <div class="edit-delete">
+                  <button class="edit-event"><i class='fa fa-pencil'></i></button>
+                  <button class="delete-event"><i class='fa fa-trash'></i></button>
+                </div>
+              </div>`;
               }
-              sectionHtml += "</div>";
+              sectionHtml += "</div></div>";
               $(".kh-list").append(sectionHtml);
             }
           }
           attachButtonListeners();
+          attachAccordionListeners();
         }
       },
       error: function () {
@@ -471,6 +517,18 @@ jQuery(document).ready(function ($) {
           "<p>Erreur lors du chargement des actions. Veuillez réessayer plus tard.</p>"
         );
       },
+    });
+  }
+
+  function attachAccordionListeners() {
+    $(".day-title").click(function () {
+      const toggleState = $(this).data("toggle");
+      if (toggleState === "closed") {
+        $(".actions-list").slideUp(); // Close all sections
+        $(".day-title").data("toggle", "closed"); // Reset toggle state
+        $(this).next(".actions-list").slideDown(); // Open the clicked section
+        $(this).data("toggle", "open"); // Set toggle state to open
+      }
     });
   }
 
