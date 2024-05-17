@@ -491,7 +491,8 @@ jQuery(document).ready(function ($) {
               <div class='actions-list' style='display: ${
                 i === 0 ? "block" : "none"
               };'>`;
-              for (let event of data[day]) {
+              for (let j = data[day].length - 1; j >= 0; j--) {
+                let event = data[day][j];
                 let heartClass = event.isFavorite
                   ? "fa fa-heart filled"
                   : "fa fa-heart";
