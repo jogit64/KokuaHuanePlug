@@ -59,6 +59,7 @@ class Kokua_Huane_Widget extends WP_Widget
         </button>
     </div>
 
+
     <div class="register-form" style="display:none;">
         <input type="email" class="register-email" placeholder="Email" required />
         <input type="text" class="register-display-name" placeholder="Pseudo" />
@@ -77,15 +78,9 @@ class Kokua_Huane_Widget extends WP_Widget
     </div>
 
 
-    <div class="kh-response">
-
+    <div class="kh-boost-container">
+        <button class="boost-button">BOOST!</button>
     </div>
-
-
-    <div class="kh-list">
-
-    </div>
-
 
     <div class="loading-indicator">
         <div class="loader">
@@ -95,6 +90,14 @@ class Kokua_Huane_Widget extends WP_Widget
         </div>
     </div>
 
+    <div class="kh-response">
+
+    </div>
+
+
+    <div class="kh-list">
+
+    </div>
 
     <div class="kh-controls-container">
         <div class="kh-controls">
@@ -108,6 +111,14 @@ class Kokua_Huane_Widget extends WP_Widget
 
 
             <div class="listening-indicator"></div><!-- Indicateur d'écoute -->
+        </div>
+    </div>
+
+    <div id="feedback-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Boost !</h2>
+            <p id="feedback-text">Votre feedback apparaîtra ici.</p>
         </div>
     </div>
 

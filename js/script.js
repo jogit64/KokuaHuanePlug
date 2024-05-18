@@ -76,6 +76,7 @@ jQuery(document).ready(function ($) {
       $(".logout-button").show();
       $(".show-register-form").hide();
       $(".kh-controls-container").show();
+      $(".kh-boost-container").show();
 
       // Charger les actions seulement si l'utilisateur est connecté
       loadUserActions();
@@ -87,6 +88,7 @@ jQuery(document).ready(function ($) {
       $(".show-register-form").show();
       $(".kh-response").html("");
       $(".kh-controls-container").hide();
+      $(".kh-boost-container").hide();
       // Ne pas tenter de charger les actions si l'utilisateur n'est pas connecté
       $(".kh-list").html("<p>Connectez-vous pour voir vos actions.</p>");
     }
@@ -568,6 +570,49 @@ jQuery(document).ready(function ($) {
         addToFavorites(eventId, $(this));
       }
     });
+
+    // Ajouter l'écouteur pour le bouton BOOST!
+    $(".kh-widget").off("click", ".boost-button");
+    $(".kh-widget").on("click", ".boost-button", function () {
+      $(".loading-indicator").addClass("active");
+      $.ajax({
+        url: "https://kokuauhane-071dbd833182.herokuapp.com/get_action_feedback",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt"),
+        },
+        success: function (data) {
+          let feedback = data.Feedback;
+          // Convertir les Markdown en HTML si nécessaire
+          feedback = feedback.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); // Convertit **text** en <strong>text</strong>
+          feedback = feedback.replace(/### (.*?)\n/g, "<h3>$1</h3>"); // Convertit ### Title en <h3>Title</h3>
+          feedback = feedback.replace(/## (.*?)\n/g, "<h2>$1</h2>"); // Convertit ## Title en <h2>Title</h2>
+          feedback = feedback.replace(/\n/g, "<br>"); // Convertit les retours à la ligne en <br>
+
+          $("#feedback-text").html("<div>" + feedback + "</div>");
+          showModal();
+        },
+        error: function () {
+          $("#feedback-text").html(
+            "Erreur lors du chargement des feedbacks. Veuillez réessayer plus tard."
+          );
+          showModal();
+        },
+        complete: function () {
+          $(".loading-indicator").removeClass("active");
+        },
+      });
+    });
+
+    // Gestion de la fermeture de la modale
+    $(".modal .close").click(function () {
+      $(".modal").hide();
+    });
+  }
+
+  // Fonction pour afficher la fenêtre modale
+  function showModal() {
+    $("#feedback-modal").show();
   }
 
   function addToFavorites(eventId, heartIcon) {
