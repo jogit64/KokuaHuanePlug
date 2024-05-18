@@ -264,7 +264,7 @@
   align-items: flex-start;
   justify-content: center;
   position: absolute;
-  top: 15%; /* Ajustez pour placer l'indicateur exactement où vous le voulez */
+  top: 30%; /* Ajustez pour placer l'indicateur exactement où vous le voulez */
   left: 0;
   right: 0;
   visibility: hidden;
