@@ -613,7 +613,23 @@ jQuery(document).ready(function ($) {
   // Fonction pour afficher la fenêtre modale
   function showModal() {
     $("#feedback-modal").show();
+    readModalContent();
   }
+
+  // Fonction pour lire le contenu de la modale
+  function readModalContent() {
+    let textToRead = $("#feedback-text").text(); // Obtenez le texte à lire
+    let utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.lang = "fr-FR"; // Définir la langue de la synthèse vocale
+    synth.speak(utterance);
+  }
+
+  // Attache le bouton OFF de la modale à l'arrêt de la synthèse
+  $("#btn-off").click(function () {
+    if (synth.speaking) {
+      synth.cancel(); // Utilisez la même méthode pour arrêter la synthèse
+    }
+  });
 
   function addToFavorites(eventId, heartIcon) {
     $.ajax({
